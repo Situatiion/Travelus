@@ -6,7 +6,7 @@
     <title>Mon Compagnon de Voyage - V1 Sécurisée</title>
     <!-- Tailwind CSS pour le design -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- CDN de Supabase pour gérer l'authentification et les données -->
+    <!-- CDN de Supabase pour gérer l'authentification -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,18 +19,16 @@
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen pb-12">
 
     <!-- ==================================================== -->
-    <!-- ÉCRAN 1 : FORMULAIRE DE CONNEXION (VISIBLE PAR DÉFAUT) -->
+    <!-- ÉCRAN 1 : FORMULAIRE DE CONNEXION -->
     <!-- ==================================================== -->
     <div id="login-screen" class="flex flex-col items-center justify-center min-h-screen px-4">
         <div class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
-            <!-- Logo / Emplacement Brand -->
             <div class="text-center mb-8">
                 <span class="text-3xl">✈️</span>
                 <h1 class="text-2xl font-extrabold text-slate-900 mt-3">Votre Espace Voyage</h1>
                 <p class="text-sm text-slate-400 mt-1">Connectez-vous pour accéder à votre road-book</p>
             </div>
 
-            <!-- Formulaire -->
             <form id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Adresse Email</label>
@@ -48,12 +46,10 @@
         </div>
     </div>
 
-
     <!-- ==================================================== -->
-    <!-- ÉCRAN 2 : LE DASHBOARD DU VOYAGEUR (MASQUÉ AU DÉBUT) -->
+    <!-- ÉCRAN 2 : LE DASHBOARD DU VOYAGEUR -->
     <!-- ==================================================== -->
     <div id="dashboard-screen" class="hidden">
-        <!-- BANNIÈRE IMMERSIVE -->
         <header class="relative h-64 bg-slate-900 flex items-end p-6 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" alt="Destination" class="absolute inset-0 w-full h-full object-cover opacity-60">
             <div class="relative z-10 w-full max-w-md mx-auto flex justify-between items-end">
@@ -62,7 +58,6 @@
                     <h1 class="text-3xl font-extrabold text-white mt-2">Dolce Vita à Positano</h1>
                     <p class="text-slate-200 text-sm">Organisé pour <span id="user-display-email">...</span></p>
                 </div>
-                <!-- Bouton Déconnexion -->
                 <button id="btn-logout" class="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold px-3 py-2 rounded-xl backdrop-blur-sm transition">
                     Quitter
                 </button>
@@ -70,8 +65,7 @@
         </header>
 
         <main class="max-w-md mx-auto px-4 mt-6 space-y-6">
-
-            <!-- COMPTEUR STYLE RYANAIR -->
+            <!-- COMPTEUR -->
             <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Décollage dans...</h2>
                 <div class="grid grid-cols-3 gap-2">
@@ -90,7 +84,7 @@
                 </div>
             </section>
 
-            <!-- BOUTON TÉLÉCHARGEMENT -->
+            <!-- BOUTON PDF -->
             <section>
                 <a href="#" download="Mon-Roadbook.pdf" class="w-full bg-emerald-500 hover:bg-emerald-600 transition text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-md shadow-emerald-500/20">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
@@ -100,7 +94,7 @@
                 </a>
             </section>
 
-            <!-- LES DOCUMENTS / LOGISTIQUE -->
+            <!-- LOGISTIQUE -->
             <section class="space-y-3">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Vos documents de voyage</h3>
                 <div class="space-y-2">
@@ -120,17 +114,15 @@
     </div>
 
     <!-- ==================================================== -->
-    <!-- LOGIQUE LOGIN & SUPABASE -->
+    <!-- LOGIQUE LOGICIELLE -->
     <!-- ==================================================== -->
     <script>
-        // 1. CONFIGURATION DE TES CLÉS SUPABASE (URL CORRIGÉE)
         const SUPABASE_URL = "https://fwpncwhgadjexxqzwzvp.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3cG5jd2hnYWRqZXh4cXp3enZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjU3ODcsImV4cCI6MjA5NjUwMTc4N30.INMWhHLyP4X9qu-R1HIJQHya7ySdsI9oREXfwq7LVxA";
 
-        // Initialisation du client Supabase
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Correction du nom ici pour éviter le conflit avec le script global
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Sélection des éléments HTML
         const loginScreen = document.getElementById('login-screen');
         const dashboardScreen = document.getElementById('dashboard-screen');
         const loginForm = document.getElementById('login-form');
@@ -138,53 +130,50 @@
         const userDisplayEmail = document.getElementById('user-display-email');
         const btnLogout = document.getElementById('btn-logout');
 
-        // 2. GESTION DE LA CONNEXION
+        // GESTION DE LA CONNEXION
         loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Maintenant, cette ligne va fonctionner !
             loginError.classList.add('hidden');
             
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            // Appel à l'API d'authentification Supabase
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
             if (error) {
-                loginError.innerText = "Identifiants incorrects. Veuillez réessayer.";
+                loginError.innerText = "Identifiants incorrects ou compte non confirmé.";
                 loginError.classList.remove('hidden');
             } else {
-                // Succès : On affiche le tableau de bord
                 showDashboard(data.user);
             }
         });
 
-        // 3. SECURITÉ : VERIFIER SI L'UTILISATEUR EST DÉJÀ CONNECTÉ
+        // VERIFIER SI DEJA CONNECTÉ
         async function checkUserSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 showDashboard(session.user);
             }
         }
         checkUserSession();
 
-        // Fonction pour basculer les écrans
         function showDashboard(user) {
             loginScreen.classList.add('hidden');
             dashboardScreen.classList.remove('hidden');
-            userDisplayEmail.innerText = user.email; // Affiche l'email du client connecté
-            startCountdown(); // Lance le compteur de jours
+            userDisplayEmail.innerText = user.email;
+            startCountdown();
         }
 
-        // 4. GESTION DE LA DÉCONNEXION
+        // DECONNEXION
         btnLogout.addEventListener('click', async () => {
-            await supabase.auth.signOut();
-            window.location.reload(); // Recharge la page pour revenir au login
+            await supabaseClient.auth.signOut();
+            window.location.reload();
         });
 
-        // 5. FONCTION COMPTEUR (RYANAIR)
+        // COMPTEUR
         function startCountdown() {
             const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + 12); // Simule un départ dans 12 jours
+            targetDate.setDate(targetDate.getDate() + 12);
 
             function updateCountdown() {
                 const now = new Date();
