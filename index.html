@@ -3,225 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Compagnon de Voyage v3</title>
+    <title>Mon Espace Voyage Premium</title>
+    <!-- Tailwind CSS pour un design moderne -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SDK Supabase officiel -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Police d'écriture premium -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen pb-12">
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-indigo-500/30">
 
-    <div id="login-screen" class="flex flex-col items-center justify-center min-h-screen px-4">
-        <div class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+    <!-- CONTAINER FORMAT MOBILE SUR PC -->
+    <div class="max-w-md mx-auto min-h-screen bg-slate-900 shadow-2xl relative flex flex-col border-x border-slate-800/50">
+        
+        <!-- ========================================== -->
+        <!-- 1. ÉCRAN DE CONNEXION INITIAL              -->
+        <!-- ========================================== -->
+        <div id="login-screen" class="flex-1 flex flex-col justify-center px-6 py-12">
             <div class="text-center mb-8">
-                <span class="text-3xl">✈️</span>
-                <h1 class="text-2xl font-extrabold text-slate-900 mt-3">Votre Espace Voyage</h1>
-                <p class="text-sm text-slate-400 mt-1">Connectez-vous pour accéder à vos documents</p>
+                <span class="text-4xl">✈️</span>
+                <h1 class="text-2xl font-extrabold text-white mt-3 tracking-tight">Votre Carnet de Voyage</h1>
+                <p class="text-xs text-slate-400 mt-1">Connectez-vous pour accéder à votre itinéraire sur-mesure</p>
             </div>
+
             <form id="login-form" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Adresse Email</label>
-                    <input type="email" id="login-email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500" placeholder="exemple@mail.com">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Adresse Email</label>
+                    <input type="email" id="login-email" required placeholder="exemple@mail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-600 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Mot de passe</label>
-                    <input type="password" id="login-password" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500" placeholder="••••••••">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Mot de passe</label>
+                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-600 transition">
                 </div>
-                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 rounded-xl transition shadow-lg mt-2">Débloquer mon voyage</button>
+                <button type="submit" id="btn-login" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-indigo-600/10 text-sm tracking-wide">
+                    🚀 Se connecter
+                </button>
             </form>
-            <div id="login-error" class="text-rose-500 text-xs text-center mt-4 hidden"></div>
         </div>
-    </div>
 
-    <div id="dashboard-screen" class="hidden">
-        <header class="relative h-64 bg-slate-900 flex items-end p-6 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" alt="Destination" class="absolute inset-0 w-full h-full object-cover opacity-60">
-            <div class="relative z-10 w-full max-w-md mx-auto flex justify-between items-end">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full backdrop-blur-sm">Carnet de bord</span>
-                    <h1 id="voyage-destination" class="text-3xl font-extrabold text-white mt-2">Chargement...</h1>
-                    <p class="text-slate-200 text-xs">Client : <span id="user-display-email">...</span></p>
-                </div>
-                <button id="btn-logout" class="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold px-3 py-2 rounded-xl backdrop-blur-sm transition">Quitter</button>
+        <!-- ========================================== -->
+        <!-- 2. ÉCRAN : CONFIGURATION DU MOT DE PASSE   -->
+        <!-- ========================================== -->
+        <div id="setup-password-screen" class="hidden flex-1 flex flex-col justify-center px-6 py-12">
+            <div class="text-center mb-6">
+                <span class="text-4xl">👋</span>
+                <h2 class="text-2xl font-extrabold text-white mt-3 tracking-tight">Bienvenue à bord !</h2>
+                <p class="text-xs text-slate-400 mt-1.5 px-4">Pour activer définitivement votre compte client, veuillez configurer votre mot de passe secret.</p>
             </div>
-        </header>
-
-        <main class="max-w-md mx-auto px-4 mt-6 space-y-6">
-            <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Décollage dans...</h2>
-                <div class="grid grid-cols-3 gap-2">
-                    <div class="bg-slate-900 text-white rounded-xl p-3"><span id="countdown-days" class="text-2xl font-extrabold block">00</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Jours</span></div>
-                    <div class="bg-slate-900 text-white rounded-xl p-3"><span id="countdown-hours" class="text-2xl font-extrabold block">00</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Heures</span></div>
-                    <div class="bg-slate-900 text-white rounded-xl p-3"><span id="countdown-minutes" class="text-2xl font-extrabold block">00</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Min</span></div>
+            
+            <form id="setup-password-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Créez votre mot de passe</label>
+                    <input type="password" id="new-password" required placeholder="Minimum 6 caractères" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-600 transition">
                 </div>
-            </section>
+                <button type="submit" id="btn-save-password" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-600/10 text-sm tracking-wide">
+                    🔐 Activer mon compte & voir mon voyage
+                </button>
+            </form>
+        </div>
 
-            <section>
-                <a id="voyage-pdf" href="#" target="_blank" class="w-full bg-emerald-500 hover:bg-emerald-600 transition text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-md text-sm">
-                    🖨️ Télécharger le Road-Book (PDF Complet)
-                </a>
-            </section>
-
-            <section class="space-y-3">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Vos Transports</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-white p-4 rounded-2xl border border-slate-100 space-y-1">
-                        <span class="text-[10px] font-bold text-blue-500 uppercase">🛫 Vol Aller</span>
-                        <h4 id="vol-nom" class="font-bold text-xs text-slate-900">...</h4>
-                        <p id="vol-numero" class="text-[11px] text-slate-400">...</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-100 space-y-1">
-                        <span class="text-[10px] font-bold text-indigo-500 uppercase">🛬 Vol Retour</span>
-                        <h4 id="vol-retour-nom" class="font-bold text-xs text-slate-900">...</h4>
-                        <p id="vol-retour-numero" class="text-[11px] text-slate-400">...</p>
-                    </div>
+        <!-- ========================================== -->
+        <!-- 3. ÉCRAN PRINCIPAL DE L'APPLICATION (DASHBOARD) -->
+        <!-- ========================================== -->
+        <div id="app-screen" class="hidden flex-1 flex flex-col pb-12">
+            
+            <!-- Navbar de l'application -->
+            <header class="bg-slate-900/80 backdrop-blur border-b border-slate-800/60 sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🌍</span>
+                    <span class="font-bold text-white text-sm tracking-tight">Mon Road-Book Digital</span>
                 </div>
-            </section>
+                <button id="btn-logout" class="text-xs font-medium text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-950/50 bg-slate-950/40 px-3 py-1.5 rounded-lg transition">Déconnexion</button>
+            </header>
 
-            <section id="section-logements" class="space-y-3">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Vos Hébergements</h3>
-                <div id="hotels-list-container" class="space-y-3">
+            <!-- Bannière Destination & Compteur -->
+            <div class="bg-gradient-to-b from-indigo-900/30 to-transparent px-4 pt-6 pb-4 border-b border-slate-800/30">
+                <h2 id="app-destination" class="text-xl font-extrabold text-white tracking-tight">Chargement de votre voyage...</h2>
+                <div id="countdown-box" class="mt-2 bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-2.5 flex items-center justify-between">
+                    <span class="text-xs text-slate-400 font-medium">Départ de l'aventure :</span>
+                    <span id="countdown-timer" class="text-xs font-bold font-mono text-amber-400">Calcul en cours...</span>
+                </div>
+            </div>
+
+            <main class="px-4 py-4 space-y-6">
+                <!-- Bouton PDF Roadbook Universel -->
+                <div id="pdf-container" class="hidden">
+                    <a id="pdf-link" href="#" target="_blank" class="w-full bg-slate-800 hover:bg-slate-750 text-white font-semibold py-3 px-4 rounded-xl transition border border-slate-700/50 flex items-center justify-center gap-2 text-xs shadow-md">
+                        📄 Télécharger le Road-Book Officiel (PDF)
+                    </a>
+                </div>
+
+                <!-- Section Transports -->
+                <section class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">🛫 Vols & Transports</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-3">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Aller</span>
+                            <p id="vol-aller-nom" class="text-xs font-bold text-white mt-1">-</p>
+                            <p id="vol-aller-num" class="text-[11px] font-mono text-slate-400 mt-0.5">-</p>
+                        </div>
+                        <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-3">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Retour</span>
+                            <p id="vol-retour-nom" class="text-xs font-bold text-white mt-1">-</p>
+                            <p id="vol-retour-num" class="text-[11px] font-mono text-slate-400 mt-0.5">-</p>
+                        </div>
                     </div>
-            </section>
+                </section>
 
-            <section id="section-programme" class="space-y-3 hidden">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Votre Itinéraire Détaillé</h3>
-                <div id="programme-container" class="space-y-6"></div>
-            </section>
-        </main>
+                <!-- Section Hébergements (Illimités) -->
+                <section class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">🏨 Vos Hébergements / Étapes</h3>
+                    <div id="hotels-list" class="space-y-3">
+                        <!-- Injecté par JS -->
+                    </div>
+                </section>
+
+                <!-- Section Planning Chronologique -->
+                <section class="space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">📅 Votre Itinéraire Quotidien</h3>
+                    <div id="programme-list" class="space-y-6 relative before:absolute before:top-2 before:bottom-2 before:left-[11px] before:w-0.5 before:bg-slate-800">
+                        <!-- Injecté par JS -->
+                    </div>
+                </section>
+            </main>
+        </div>
+
     </div>
 
+    <!-- ========================================== -->
+    <!-- LOGIQUE LOGICIELLE (JAVASCRIPT / SUPABASE) -->
+    <!-- ========================================== -->
     <script>
+        // Configuration de tes accès Supabase
         const SUPABASE_URL = "https://fwpncwhgadjexxqzwzvp.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3cG5jd2hnYWRqZXh4cXp3enZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjU3ODcsImV4cCI6MjA5NjUwMTc4N30.INMWhHLyP4X9qu-R1HIJQHya7ySdsI9oREXfwq7LVxA";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const loginScreen = document.getElementById('login-screen');
-        const dashboardScreen = document.getElementById('dashboard-screen');
-        const loginForm = document.getElementById('login-form');
-        const loginError = document.getElementById('login-error');
-        const userDisplayEmail = document.getElementById('user-display-email');
-        const btnLogout = document.getElementById('btn-logout');
-        let countdownInterval;
+        let countdownInterval = null;
 
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            loginError.classList.add('hidden');
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) { loginError.innerText = "Identifiants incorrects."; loginError.classList.remove('hidden'); }
-            else { showDashboard(data.user); }
+        // 1. DÉTECTION DIRECTE DU LIEN D'INVITATION (MAIL)
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash;
+            if (hash && (hash.includes('type=invite') || hash.includes('type=recovery'))) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('setup-password-screen').classList.remove('hidden');
+            }
         });
 
-        async function checkUserSession() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) { showDashboard(session.user); }
-        }
-        checkUserSession();
+        // ACTION : SOUMISSION NOUVEAU MOT DE PASSE (INVITATION)
+        document.getElementById('setup-password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('new-password').value;
+            const btn = document.getElementById('btn-save-password');
 
-        async function showDashboard(user) {
-            loginScreen.classList.add('hidden');
-            dashboardScreen.classList.remove('hidden');
-            userDisplayEmail.innerText = user.email;
+            if (password.length < 6) return alert("Le mot de passe doit comporter 6 caractères minimum.");
 
-            const { data: voyage, error } = await supabaseClient.from('voyages').select('*').eq('user_id', user.id).maybeSingle();
-            if (error || !voyage) { document.getElementById('voyage-destination').innerText = "Erreur ou aucun voyage."; return; }
+            btn.disabled = true;
+            btn.innerText = "⏳ Création de votre profil...";
 
-            document.getElementById('voyage-destination').innerText = voyage.destination;
-            document.getElementById('voyage-pdf').href = voyage.pdf_url || "#";
-            
-            document.getElementById('vol-nom').innerText = voyage.vol_nom || "Non spécifié";
-            document.getElementById('vol-numero').innerText = "N° " + (voyage.vol_numero || "...");
-            document.getElementById('vol-retour-nom').innerText = voyage.vol_retour_nom || "Non programmé";
-            document.getElementById('vol-retour-numero').innerText = voyage.vol_retour_numero ? "N° " + voyage.vol_retour_numero : "...";
+            const { error } = await supabaseClient.auth.updateUser({ password: password });
 
-            // GÉNÉRATION DYNAMIQUE DES HÔTELS
-            const hotelsContainer = document.getElementById('hotels-list-container');
-            hotelsContainer.innerHTML = "";
-            
-            if (voyage.hotels && Array.isArray(voyage.hotels) && voyage.hotels.length > 0) {
-                voyage.hotels.forEach((hotel) => {
-                    const htmlHotel = `
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
-                            <div class="flex gap-3">
-                                <div class="bg-amber-50 text-amber-600 p-2 rounded-xl text-lg flex items-center justify-center h-10 w-10">🏨</div>
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-sm text-slate-900">${hotel.nom || "Hébergement"}</h4>
-                                    <div class="grid grid-cols-2 gap-2 mt-2 text-[11px] border-t border-slate-50 pt-2">
-                                        <div><span class="text-slate-400 block font-semibold">🔑 CHECK-IN</span><span class="text-slate-700">${hotel.checkin || "Non spécifié"}</span></div>
-                                        <div><span class="text-slate-400 block font-semibold">🚪 CHECK-OUT</span><span class="text-slate-700">${hotel.checkout || "Non spécifié"}</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            ${hotel.maps_url ? `<a href="${hotel.maps_url}" target="_blank" class="w-full bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition border border-slate-100">📍 Ouvrir dans Google Maps</a>` : ''}
-                        </div>
-                    `;
-                    hotelsContainer.insertAdjacentHTML('beforeend', htmlHotel);
-                });
+            if (error) {
+                alert("Erreur d'enregistrement : " + error.message);
+                btn.disabled = false;
+                btn.innerText = "🔐 Activer mon compte & voir mon voyage";
             } else {
-                hotelsContainer.innerHTML = `<p class="text-xs text-slate-400 italic p-2">Aucun logement enregistré pour ce voyage.</p>`;
+                alert("✨ Compte activé avec succès !");
+                window.location.hash = ""; // Vide le token de l'URL
+                location.reload(); // Actualise pour forcer la connexion
+            }
+        });
+
+        // 2. SURVEILLANCE DE L'ÉTAT DE CONNEXION (AUTH OBSERVER)
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                // Connecté : afficher le tableau de bord
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('setup-password-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+                fetchVoyageData(session.user.id);
+            } else {
+                // Déconnecté : retour à l'accueil
+                document.getElementById('app-screen').classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+                if(countdownInterval) clearInterval(countdownInterval);
+            }
+        });
+
+        // ACTION : CONNEXION CLASSIQUE FORMULAIRE
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('btn-login');
+
+            btn.disabled = true;
+            btn.innerText = "⏳ Connexion en cours...";
+
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                alert("Identifiants incorrects : " + error.message);
+                btn.disabled = false;
+                btn.innerText = "🚀 Se connecter";
+            }
+        });
+
+        // ACTION : BOUTON DE DÉCONNEXION
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+        });
+
+        // 3. RECUPÉRATION DES DONNÉES DU VOYAGE DEPUIS SUPABASE
+        async function fetchVoyageData(userId) {
+            const { data: voyage, error } = await supabaseClient
+                .from('voyages')
+                .select('*')
+                .eq('user_id', userId)
+                .maybeSingle();
+
+            if (error) {
+                console.error("Erreur de récupération :", error);
+                document.getElementById('app-destination').innerText = "Erreur de synchronisation";
+                return;
             }
 
-            // GÉNÉRATION D'ITINÉRAIRE
-            const sectionProgramme = document.getElementById('section-programme');
-            const containerProgramme = document.getElementById('programme-container');
-            containerProgramme.innerHTML = "";
-
-            if (voyage.programme && Array.isArray(voyage.programme) && voyage.programme.length > 0) {
-                sectionProgramme.classList.remove('hidden');
-                
-                voyage.programme.forEach((jour, index) => {
-                    let htmlActivites = "";
-                    if(jour.activites && jour.activites.length > 0) {
-                        jour.activites.forEach(act => {
-                            htmlActivites += `
-                                <div class="flex gap-3 text-xs pl-2">
-                                    <span class="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded h-5 text-[10px] flex items-center">${act.horaire || "--:--"}</span>
-                                    <div class="flex-1">
-                                        <h5 class="font-semibold text-slate-800">${act.titre || "Activité"}</h5>
-                                        <p class="text-slate-400 text-[11px] mt-0.5 leading-relaxed">${act.desc || ""}</p>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    }
-
-                    const htmlJour = `
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
-                            <div class="border-b border-slate-100 pb-2">
-                                <span class="text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest">Jour ${index + 1}</span>
-                                <h4 class="font-extrabold text-sm text-slate-900">${jour.titre_jour || "Programme de la journée"}</h4>
-                            </div>
-                            <div class="relative border-l-2 border-indigo-50 pl-2 ml-1 space-y-4">
-                                ${htmlActivites || '<p class="text-xs text-slate-400 italic">Aucune activité.</p>'}
-                            </div>
-                        </div>
-                    `;
-                    containerProgramme.insertAdjacentHTML('beforeend', htmlJour);
-                });
+            if (!voyage) {
+                document.getElementById('app-destination').innerText = "Construction en cours...";
+                document.getElementById('countdown-timer').innerText = "À venir";
+                return;
             }
 
-            startCountdown(voyage.date_depart);
+            // Remplissage des blocs textuels basiques
+            document.getElementById('app-destination').innerText = voyage.destination || "Votre Évasion Personnalisée";
+            document.getElementById('vol-aller-nom').innerText = voyage.vol_nom || "À préciser";
+            document.getElementById('vol-aller-num').innerText = voyage.vol_numero || "N° non communiqué";
+            document.getElementById('vol-retour-nom').innerText = voyage.vol_retour_nom || "À préciser";
+            document.getElementById('vol-retour-num').innerText = voyage.vol_retour_numero || "N° non communiqué";
+
+            // Gestion dynamique du bouton PDF Road-Book
+            if (voyage.pdf_url && voyage.pdf_url.trim() !== "") {
+                document.getElementById('pdf-link').href = voyage.pdf_url;
+                document.getElementById('pdf-container').classList.remove('hidden');
+            } else {
+                document.getElementById('pdf-container').classList.add('hidden');
+            }
+
+            // Lancement du compte à rebours dynamique
+            if (voyage.date_depart) {
+                initCountdown(voyage.date_depart);
+            } else {
+                document.getElementById('countdown-timer').innerText = "Dates à confirmer";
+            }
+
+            // Injection visuelle de la liste des Hébergements
+            renderHotels(voyage.hotels);
+
+            // Injection visuelle de l'itinéraire détaillé
+            renderProgramme(voyage.programme);
         }
 
-        btnLogout.addEventListener('click', async () => { await supabaseClient.auth.signOut(); window.location.reload(); });
+        // ⏳ LOGIQUE COMPTE À REBOURS
+        function initCountdown(targetDateStr) {
+            const targetDate = new Date(targetDateStr).getTime();
+            if(countdownInterval) clearInterval(countdownInterval);
 
-        function startCountdown(dateDepart) {
-            if (!dateDepart) return;
-            if (countdownInterval) clearInterval(countdownInterval);
-            const targetDate = new Date(dateDepart);
-            function updateCountdown() {
-                const difference = targetDate - new Date();
-                if (difference <= 0) return;
-                document.getElementById('countdown-days').innerText = Math.floor(difference / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-                document.getElementById('countdown-hours').innerText = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                document.getElementById('countdown-minutes').innerText = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            function updateTimer() {
+                const now = new Date().getTime();
+                const difference = targetDate - now;
+
+                if (difference <= 0) {
+                    document.getElementById('countdown-timer').innerText = "🎉 C'est le grand départ !";
+                    clearInterval(countdownInterval);
+                    return;
+                }
+
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+                document.getElementById('countdown-timer').innerText = `${days}j ${hours}h ${minutes}m`;
             }
-            updateCountdown(); countdownInterval = setInterval(updateCountdown, 60000);
+
+            updateTimer();
+            countdownInterval = setInterval(updateTimer, 60000); // Rafraîchissement chaque minute
+        }
+
+        // 🏨 INJECTION HTML COMPOSANT HÔTELS
+        function renderHotels(hotelsArray) {
+            const container = document.getElementById('hotels-list');
+            container.innerHTML = "";
+
+            if (!hotelsArray || !Array.isArray(hotelsArray) || hotelsArray.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic">Aucun hôtel planifié pour le moment.</p>`;
+                return;
+            }
+
+            hotelsArray.forEach(hotel => {
+                const mapsBtn = hotel.maps_url ? `
+                    <a href="${hotel.maps_url}" target="_blank" class="mt-2.5 inline-flex items-center gap-1 text-[11px] font-bold text-indigo-400 hover:text-indigo-300 transition">
+                        📍 Ouvrir dans Google Maps ➔
+                    </a>
+                ` : "";
+
+                const html = `
+                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-3.5 shadow-sm">
+                        <h4 class="text-xs font-bold text-white flex items-center gap-1.5">🏨 ${hotel.nom || "Hébergement"}</h4>
+                        <div class="grid grid-cols-2 gap-2 mt-2 border-t border-slate-900 pt-2 text-[11px] text-slate-400">
+                            <div><span class="text-[9px] uppercase tracking-wider font-semibold text-slate-500 block">Arrivée</span> ${hotel.checkin || "-"}</div>
+                            <div><span class="text-[9px] uppercase tracking-wider font-semibold text-slate-500 block">Départ</span> ${hotel.checkout || "-"}</div>
+                        </div>
+                        ${mapsBtn}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // 📅 INJECTION HTML COMPOSANT PROGRAMME COMPLET
+        function renderProgramme(programmeArray) {
+            const container = document.getElementById('programme-list');
+            container.innerHTML = "";
+
+            if (!programmeArray || !Array.isArray(programmeArray) || programmeArray.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic pl-4">Itinéraire en cours d'élaboration.</p>`;
+                return;
+            }
+
+            programmeArray.forEach((journée) => {
+                let activitesHTML = "";
+
+                if (journée.activites && Array.isArray(journée.activites)) {
+                    journée.activites.forEach(act => {
+                        activitesHTML += `
+                            <div class="bg-slate-950/20 border border-slate-800/40 rounded-lg p-2.5 space-y-1">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="bg-indigo-950 text-indigo-400 border border-indigo-900/50 font-mono text-[10px] font-bold px-1.5 py-0.5 rounded">${act.horaire || "00:00"}</span>
+                                    <h5 class="text-xs font-bold text-slate-200">${act.titre || "Activité"}</h5>
+                                </div>
+                                ${act.desc ? `<p class="text-[11px] text-slate-400 pl-1 leading-relaxed">${act.desc}</p>` : ""}
+                            </div>
+                        `;
+                    });
+                }
+
+                const dayHtml = `
+                    <div class="relative pl-7 space-y-2">
+                        <!-- Bulle de jour sur l'axe chronologique -->
+                        <div class="absolute left-1.5 top-1 w-3 h-3 rounded-full bg-indigo-500 border-2 border-slate-900 shadow"></div>
+                        
+                        <h4 class="text-xs font-extrabold text-white tracking-wide uppercase">${journée.titre_jour || "Nouvelle Journée"}</h4>
+                        <div class="space-y-2">
+                            ${activitesHTML || '<p class="text-[10px] text-slate-500 italic">Journée libre.</p>'}
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', dayHtml);
+            });
         }
     </script>
 </body>
