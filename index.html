@@ -3,32 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Compagnon de Voyage - V1 Sécurisée</title>
-    <!-- Tailwind CSS pour le design -->
+    <title>Mon Compagnon de Voyage - V1 Dynamique</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- CDN de Supabase pour gérer l'authentification -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen pb-12">
 
-    <!-- ==================================================== -->
-    <!-- ÉCRAN 1 : FORMULAIRE DE CONNEXION -->
-    <!-- ==================================================== -->
     <div id="login-screen" class="flex flex-col items-center justify-center min-h-screen px-4">
-        <div class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+        <div class="w-full max-w-md bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
             <div class="text-center mb-8">
                 <span class="text-3xl">✈️</span>
                 <h1 class="text-2xl font-extrabold text-slate-900 mt-3">Votre Espace Voyage</h1>
                 <p class="text-sm text-slate-400 mt-1">Connectez-vous pour accéder à votre road-book</p>
             </div>
-
             <form id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Adresse Email</label>
@@ -38,7 +29,7 @@
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Mot de passe</label>
                     <input type="password" id="login-password" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 text-sm transition" placeholder="••••••••">
                 </div>
-                <button type="submit" id="btn-login" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 rounded-xl transition shadow-lg shadow-slate-900/10 mt-2">
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 rounded-xl transition shadow-lg mt-2">
                     Débloquer mon voyage
                 </button>
             </form>
@@ -46,81 +37,55 @@
         </div>
     </div>
 
-    <!-- ==================================================== -->
-    <!-- ÉCRAN 2 : LE DASHBOARD DU VOYAGEUR -->
-    <!-- ==================================================== -->
     <div id="dashboard-screen" class="hidden">
         <header class="relative h-64 bg-slate-900 flex items-end p-6 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" alt="Destination" class="absolute inset-0 w-full h-full object-cover opacity-60">
             <div class="relative z-10 w-full max-w-md mx-auto flex justify-between items-end">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full backdrop-blur-sm">Prochain Départ</span>
-                    <h1 class="text-3xl font-extrabold text-white mt-2">Dolce Vita à Positano</h1>
+                    <h1 id="voyage-destination" class="text-3xl font-extrabold text-white mt-2">Chargement...</h1>
                     <p class="text-slate-200 text-sm">Organisé pour <span id="user-display-email">...</span></p>
                 </div>
-                <button id="btn-logout" class="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold px-3 py-2 rounded-xl backdrop-blur-sm transition">
-                    Quitter
-                </button>
+                <button id="btn-logout" class="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold px-3 py-2 rounded-xl backdrop-blur-sm transition">Quitter</button>
             </div>
         </header>
 
         <main class="max-w-md mx-auto px-4 mt-6 space-y-6">
-            <!-- COMPTEUR -->
             <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Décollage dans...</h2>
                 <div class="grid grid-cols-3 gap-2">
-                    <div class="bg-slate-900 text-white rounded-xl p-3">
-                        <span id="countdown-days" class="text-2xl font-extrabold block">00</span>
-                        <span class="text-[10px] text-slate-400 uppercase font-semibold">Jours</span>
-                    </div>
-                    <div class="bg-slate-900 text-white rounded-xl p-3">
-                        <span id="countdown-hours" class="text-2xl font-extrabold block">00</span>
-                        <span class="text-[10px] text-slate-400 uppercase font-semibold">Heures</span>
-                    </div>
-                    <div class="bg-slate-900 text-white rounded-xl p-3">
-                        <span id="countdown-minutes" class="text-2xl font-extrabold block">00</span>
-                        <span class="text-[10px] text-slate-400 uppercase font-semibold">Min</span>
-                    </div>
+                    <div class="bg-slate-900 text-white rounded-xl p-3"><span id="countdown-days" class="text-2xl font-extrabold block">00</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Jours</span></div>
+                    <div class="bg-slate-900 text-white rounded-xl p-3"><span id="countdown-hours" class="text-2xl font-extrabold block">00</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Heures</span></div>
+                    <div class="bg-slate-900 text-white rounded-xl p-3"><span id="countdown-minutes" class="text-2xl font-extrabold block">00</span><span class="text-[10px] text-slate-400 uppercase font-semibold">Min</span></div>
                 </div>
             </section>
 
-            <!-- BOUTON PDF -->
             <section>
-                <a href="#" download="Mon-Roadbook.pdf" class="w-full bg-emerald-500 hover:bg-emerald-600 transition text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-md shadow-emerald-500/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                    </svg>
+                <a id="voyage-pdf" href="#" target="_blank" class="w-full bg-emerald-500 hover:bg-emerald-600 transition text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
                     Télécharger le Road-Book (PDF)
                 </a>
             </section>
 
-            <!-- LOGISTIQUE -->
             <section class="space-y-3">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Vos documents de voyage</h3>
-                <div class="space-y-2">
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-blue-50 text-blue-600 p-2 rounded-lg">🛫</div>
-                            <div>
-                                <h4 class="font-semibold text-sm">Vol Aller — Volotea</h4>
-                                <p class="text-xs text-slate-400">N° Vol : V72401</p>
-                            </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-50 text-blue-600 p-2 rounded-lg">🛫</div>
+                        <div>
+                            <h4 id="vol-nom" class="font-semibold text-sm">Chargement...</h4>
+                            <p id="vol-numero" class="text-xs text-slate-400">...</p>
                         </div>
-                        <a href="#" target="_blank" class="text-xs font-bold text-blue-600 hover:underline">Accéder</a>
                     </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- ==================================================== -->
-    <!-- LOGIQUE LOGICIELLE -->
-    <!-- ==================================================== -->
     <script>
         const SUPABASE_URL = "https://fwpncwhgadjexxqzwzvp.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3cG5jd2hnYWRqZXh4cXp3enZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjU3ODcsImV4cCI6MjA5NjUwMTc4N30.INMWhHLyP4X9qu-R1HIJQHya7ySdsI9oREXfwq7LVxA";
 
-        // Correction du nom ici pour éviter le conflit avec le script global
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const loginScreen = document.getElementById('login-screen');
@@ -130,54 +95,76 @@
         const userDisplayEmail = document.getElementById('user-display-email');
         const btnLogout = document.getElementById('btn-logout');
 
-        // GESTION DE LA CONNEXION
+        let countdownInterval;
+
         loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Maintenant, cette ligne va fonctionner !
+            e.preventDefault();
             loginError.classList.add('hidden');
-            
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
             const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
             if (error) {
-                loginError.innerText = "Identifiants incorrects ou compte non confirmé.";
+                loginError.innerText = "Identifiants incorrects.";
                 loginError.classList.remove('hidden');
             } else {
                 showDashboard(data.user);
             }
         });
 
-        // VERIFIER SI DEJA CONNECTÉ
         async function checkUserSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                showDashboard(session.user);
-            }
+            if (session) { showDashboard(session.user); }
         }
         checkUserSession();
 
-        function showDashboard(user) {
+        // NOUVEAUTÉ : FONCTION QUI VA CHERCHER LES INFOS DANS LA TABLE
+        async function showDashboard(user) {
             loginScreen.classList.add('hidden');
             dashboardScreen.classList.remove('hidden');
             userDisplayEmail.innerText = user.email;
-            startCountdown();
+
+            // On va chercher la ligne dans la table 'voyages' qui correspond à l'ID du client
+            const { data: voyage, error } = await supabaseClient
+                .from('voyages')
+                .select('*')
+                .eq('user_id', user.id)
+                .single();
+
+            if (voyage) {
+                // On injecte les infos de Supabase directement dans le HTML !
+                document.getElementById('voyage-destination').innerText = voyage.destination;
+                document.getElementById('voyage-pdf').href = voyage.pdf_url;
+                document.getElementById('vol-nom').innerText = "Vol Aller — " + voyage.vol_nom;
+                document.getElementById('vol-numero').innerText = "N° Vol : " + voyage.vol_numero;
+                
+                // Lance le vrai compteur basé sur la date de Supabase
+                startCountdown(voyage.date_depart);
+            } else {
+                document.getElementById('voyage-destination').innerText = "Aucun voyage programmé";
+            }
         }
 
-        // DECONNEXION
         btnLogout.addEventListener('click', async () => {
             await supabaseClient.auth.signOut();
             window.location.reload();
         });
 
-        // COMPTEUR
-        function startCountdown() {
-            const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + 12);
+        // LE COMPTEUR PREND MAINTENANT LA VRAIE DATE EN PARAMÈTRE
+        function startCountdown(dateDepart) {
+            if (countdownInterval) clearInterval(countdownInterval);
+            const targetDate = new Date(dateDepart);
 
             function updateCountdown() {
                 const now = new Date();
                 const difference = targetDate - now;
+
+                if (difference <= 0) {
+                    document.getElementById('countdown-days').innerText = "00";
+                    document.getElementById('countdown-hours').innerText = "00";
+                    document.getElementById('countdown-minutes').innerText = "00";
+                    return;
+                }
 
                 const days = Math.floor(difference / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -188,7 +175,7 @@
                 document.getElementById('countdown-minutes').innerText = minutes.toString().padStart(2, '0');
             }
             updateCountdown();
-            setInterval(updateCountdown, 60000);
+            countdownInterval = setInterval(updateCountdown, 60000);
         }
     </script>
 </body>
