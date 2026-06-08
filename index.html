@@ -36,47 +36,35 @@
 
     <div class="glow-effect"></div>
 
-    <div id="login-screen" class="min-h-screen flex items-center justify-center px-4 relative z-10">
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center px-4 relative z-10">
         <div class="w-full max-w-md glass-card rounded-3xl p-8 shadow-2xl border border-slate-800/80 transition-all duration-300 hover:border-indigo-500/30">
+            
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600/10 text-indigo-400 text-3xl mb-4 border border-indigo-500/20 shadow-inner">✈️</div>
-                <h1 class="text-3xl font-extrabold text-white tracking-tight">Votre Carnet de Voyage</h1>
-                <p class="text-sm text-slate-400 mt-2">Connectez-vous pour ouvrir votre itinéraire sur-mesure</p>
+                <h1 id="auth-title" class="text-3xl font-extrabold text-white tracking-tight">Votre Carnet de Voyage</h1>
+                <p id="auth-subtitle" class="text-sm text-slate-400 mt-2">Connectez-vous pour ouvrir votre itinéraire sur-mesure</p>
             </div>
 
-            <form id="login-form" class="space-y-5">
+            <form id="auth-form" class="space-y-5">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Adresse Email</label>
-                    <input type="email" id="login-email" required placeholder="nom@exemple.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-700 transition shadow-inner">
+                    <input type="email" id="auth-email" required placeholder="nom@exemple.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-700 transition shadow-inner">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Mot de passe</label>
-                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-700 transition shadow-inner">
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-700 transition shadow-inner">
                 </div>
-                <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-indigo-600/20 text-sm tracking-wide mt-2">
+                
+                <button type="submit" id="btn-auth-submit" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-indigo-600/20 text-sm tracking-wide mt-2">
                     🚀 Se connecter au tableau de bord
                 </button>
             </form>
-        </div>
-    </div>
 
-    <div id="setup-password-screen" class="hidden min-h-screen flex items-center justify-center px-4 relative z-10">
-        <div class="w-full max-w-md glass-card rounded-3xl p-8 shadow-2xl border border-slate-800/80">
-            <div class="text-center mb-6">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-600/10 text-emerald-400 text-3xl mb-4 border border-emerald-500/20 shadow-inner">👋</div>
-                <h2 class="text-3xl font-extrabold text-white tracking-tight">Bienvenue à bord !</h2>
-                <p class="text-sm text-slate-400 mt-2 px-2">Pour activer définitivement votre espace client, choisissez votre mot de passe secret.</p>
+            <div class="text-center mt-6 text-xs text-slate-400">
+                <p id="toggle-text">Vous n'avez pas encore de compte ? 
+                    <button id="btn-toggle-mode" class="text-indigo-400 font-bold hover:underline ml-1">S'inscrire</button>
+                </p>
             </div>
-            
-            <form id="setup-password-form" class="space-y-5">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Créez votre mot de passe</label>
-                    <input type="password" id="new-password" required placeholder="Minimum 6 caractères" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-700 transition shadow-inner">
-                </div>
-                <button type="submit" id="btn-save-password" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-emerald-600/20 text-sm tracking-wide mt-2">
-                    🔐 Activer mon compte & voir mon voyage
-                </button>
-            </form>
         </div>
     </div>
 
@@ -96,7 +84,7 @@
             <div class="glass-card rounded-3xl p-8 mb-8 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">Votre Prochaine Évasion</span>
-                    <h2 id="app-destination" class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mt-1">Chargement de votre itinéraire...</h2>
+                    <h2 id="app-destination" class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mt-1">Chargement...</h2>
                 </div>
                 <div id="countdown-box" class="bg-slate-950/80 border border-slate-800/80 rounded-2xl px-5 py-3.5 flex flex-col min-w-[200px] shadow-lg">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Départ de l'aventure</span>
@@ -105,7 +93,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
                 <div class="lg:col-span-1 space-y-6">
                     <div id="pdf-container" class="hidden">
                         <a id="pdf-link" href="#" target="_blank" class="w-full bg-slate-800/80 hover:bg-slate-750 text-white font-bold py-4 px-4 rounded-xl transition border border-slate-700/40 flex items-center justify-center gap-2 text-xs shadow-md">
@@ -131,20 +118,16 @@
 
                     <div class="glass-card rounded-3xl p-6 space-y-4">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-2">🏨 Vos Établissements</h3>
-                        <div id="hotels-list" class="space-y-4">
-                            </div>
+                        <div id="hotels-list" class="space-y-4"></div>
                     </div>
                 </div>
 
                 <div class="lg:col-span-2 space-y-6">
                     <div class="glass-card rounded-3xl p-6 md:p-8">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-2 mb-6">📅 Chronologie de votre Itinéraire</h3>
-                        
-                        <div id="programme-list" class="space-y-8 relative before:absolute before:top-2 before:bottom-2 before:left-[13px] before:w-0.5 before:bg-slate-800/80">
-                            </div>
+                        <div id="programme-list" class="space-y-8 relative before:absolute before:top-2 before:bottom-2 before:left-[13px] before:w-0.5 before:bg-slate-800/80"></div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -153,56 +136,77 @@
         const SUPABASE_URL = "https://fwpncwhgadjexxqzwzvp.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3cG5jd2hnYWRqZXh4cXp3enZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjU3ODcsImV4cCI6MjA5NjUwMTc4N30.INMWhHLyP4X9qu-R1HIJQHya7ySdsI9oREXfwq7LVxA";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let isLoginMode = true; // Mode par défaut : Connexion
         let countdownInterval = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash;
-            if (hash && (hash.includes('type=invite') || hash.includes('type=recovery'))) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('setup-password-screen').classList.remove('hidden');
-            }
-        });
+        // GESTION DE LA BASCULE CONNEXION / INSCRIPTION VISUELLE
+        document.getElementById('btn-toggle-mode').addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const submitBtn = document.getElementById('btn-auth-submit');
+            const toggleText = document.getElementById('toggle-text');
 
-        document.getElementById('setup-password-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const password = document.getElementById('new-password').value;
-            const btn = document.getElementById('btn-save-password');
-            if (password.length < 6) return alert("Le mot de passe doit comporter 6 caractères minimum.");
-            btn.disabled = true;
-            const { error } = await supabaseClient.auth.updateUser({ password: password });
-            if (error) {
-                alert("Erreur : " + error.message);
-                btn.disabled = false;
+            if (isLoginMode) {
+                title.innerText = "Votre Carnet de Voyage";
+                subtitle.innerText = "Connectez-vous pour ouvrir votre itinéraire sur-mesure";
+                submitBtn.innerText = "🚀 Se connecter au tableau de bord";
+                toggleText.innerHTML = `Vous n'avez pas encore de compte ? <button id="btn-toggle-mode" class="text-indigo-400 font-bold hover:underline ml-1">S'inscrire</button>`;
             } else {
-                alert("✨ Compte activé avec succès !");
-                window.location.hash = "";
-                location.reload();
+                title.innerText = "Créer votre compte";
+                subtitle.innerText = "Rejoignez l'aventure et accédez à votre espace privé";
+                submitBtn.innerText = "✨ S'inscrire & Découvrir mon espace";
+                toggleText.innerHTML = `Vous avez déjà un compte ? <button id="btn-toggle-mode" class="text-indigo-400 font-bold hover:underline ml-1">Se connecter</button>`;
             }
+            
+            // Relancer l'écouteur sur le nouveau bouton injecté dynamiquement
+            document.getElementById('btn-toggle-mode').addEventListener('click', arguments.callee);
         });
 
+        // OBSERVATEUR DE CONNEXION SUPABASE
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('setup-password-screen').classList.add('hidden');
+                document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('app-screen').classList.remove('hidden');
                 fetchVoyageData(session.user.id);
             } else {
                 document.getElementById('app-screen').classList.add('hidden');
-                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('auth-screen').classList.remove('hidden');
                 if(countdownInterval) clearInterval(countdownInterval);
             }
         });
 
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        // ACTION : SOUMISSION DU FORMULAIRE UNIQUE
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            const btn = document.getElementById('btn-login');
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const btn = document.getElementById('btn-auth-submit');
+
             btn.disabled = true;
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) {
-                alert("Erreur : " + error.message);
-                btn.disabled = false;
+            btn.innerText = "⏳ Traitement en cours...";
+
+            if (isLoginMode) {
+                // MODE CONNEXION
+                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) {
+                    alert("Erreur de connexion : " + error.message);
+                    btn.disabled = false;
+                    btn.innerText = "🚀 Se connecter au tableau de bord";
+                }
+            } else {
+                // MODE INSCRIPTION DIRECTE
+                const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                if (error) {
+                    alert("Erreur d'inscription : " + error.message);
+                    btn.disabled = false;
+                    btn.innerText = "✨ S'inscrire & Découvrir mon espace";
+                } else {
+                    // Si la confirmation par mail est désactivée dans Supabase, il se connecte direct
+                    alert("✨ Compte créé avec succès ! Bienvenue.");
+                }
             }
         });
 
@@ -210,6 +214,7 @@
             await supabaseClient.auth.signOut();
         });
 
+        // CHARGEMENT DES DONNÉES (SQUELETTE SI RIEN N'EST ENCORE CRÉÉ)
         async function fetchVoyageData(userId) {
             const { data: voyage, error } = await supabaseClient
                 .from('voyages')
@@ -217,9 +222,13 @@
                 .eq('user_id', userId)
                 .maybeSingle();
 
+            // Si l'utilisateur vient de s'inscrire, le trigger SQL s'exécute en tâche de fond.
+            // On affiche un beau message d'attente s'il n'y a pas encore de ligne ou si elle charge
             if (!voyage || error) {
-                document.getElementById('app-destination').innerText = "Votre itinéraire sur-mesure arrive bientôt !";
-                document.getElementById('countdown-timer').innerText = "En préparation";
+                document.getElementById('app-destination').innerText = "🌍 Votre voyage sur-mesure est en préparation !";
+                document.getElementById('countdown-timer').innerText = "En cours";
+                renderHotels([{nom: "🏨 Votre hébergement mystère", checkin: "Dates à venir", checkout: "Dates à venir"}]);
+                renderProgramme([{titre_jour: "Jour 1 : L'aventure commence bientôt", activites: [{horaire: "00:00", titre: "✨ Notre équipe peaufine les détails", desc: "Nous concevons votre itinéraire idéal. Dès qu'il sera prêt, vos activités et vos vols s'afficheront ici !"}]}]);
                 return;
             }
 
@@ -232,9 +241,13 @@
             if (voyage.pdf_url) {
                 document.getElementById('pdf-link').href = voyage.pdf_url;
                 document.getElementById('pdf-container').classList.remove('hidden');
+            } else {
+                document.getElementById('pdf-container').classList.add('hidden');
             }
 
             if (voyage.date_depart) initCountdown(voyage.date_depart);
+            else document.getElementById('countdown-timer').innerText = "Dates à venir";
+            
             renderHotels(voyage.hotels);
             renderProgramme(voyage.programme);
         }
@@ -253,6 +266,7 @@
                 document.getElementById('countdown-timer').innerText = `${d}j ${h}h ${m}m`;
             }
             updateTimer();
+            if(countdownInterval) clearInterval(countdownInterval);
             countdownInterval = setInterval(updateTimer, 60000);
         }
 
