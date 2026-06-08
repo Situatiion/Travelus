@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Compagnon de Voyage - V1 Dynamique</title>
+    <title>Mon Compagnon de Voyage - Débug</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -118,31 +118,39 @@
         }
         checkUserSession();
 
-        // NOUVEAUTÉ : FONCTION QUI VA CHERCHER LES INFOS DANS LA TABLE
         async function showDashboard(user) {
             loginScreen.classList.add('hidden');
             dashboardScreen.classList.remove('hidden');
             userDisplayEmail.innerText = user.email;
 
-            // On va chercher la ligne dans la table 'voyages' qui correspond à l'ID du client
+            // REQUÊTE AVEC VÉRIFICATION DES ERREURS
             const { data: voyage, error } = await supabaseClient
                 .from('voyages')
                 .select('*')
                 .eq('user_id', user.id)
-                .single();
+                .maybeSingle(); // Modifié pour éviter le crash si vide
 
-            if (voyage) {
-                // On injecte les infos de Supabase directement dans le HTML !
-                document.getElementById('voyage-destination').innerText = voyage.destination;
-                document.getElementById('voyage-pdf').href = voyage.pdf_url;
-                document.getElementById('vol-nom').innerText = "Vol Aller — " + voyage.vol_nom;
-                document.getElementById('vol-numero').innerText = "N° Vol : " + voyage.vol_numero;
-                
-                // Lance le vrai compteur basé sur la date de Supabase
-                startCountdown(voyage.date_depart);
-            } else {
-                document.getElementById('voyage-destination').innerText = "Aucun voyage programmé";
+            // Si Supabase renvoie une vraie erreur technique (droits, RLS, orthographe)
+            if (error) {
+                console.error("Erreur complète :", error);
+                document.getElementById('voyage-destination').innerText = "Erreur Base : " + error.message;
+                return;
             }
+
+            // Si la requête fonctionne mais qu'il n'y a pas de ligne pour cet utilisateur
+            if (!voyage) {
+                document.getElementById('voyage-destination').innerText = "Aucun voyage trouvé pour cet ID";
+                console.log("ID recherché mais introuvable dans la table :", user.id);
+                return;
+            }
+
+            // Si tout est bon, on affiche les données
+            document.getElementById('voyage-destination').innerText = voyage.destination;
+            document.getElementById('voyage-pdf').href = voyage.pdf_url || "#";
+            document.getElementById('vol-nom').innerText = "Vol Aller — " + (voyage.vol_nom || "Non spécifié");
+            document.getElementById('vol-numero').innerText = "N° Vol : " + (voyage.vol_numero || "...");
+            
+            startCountdown(voyage.date_depart);
         }
 
         btnLogout.addEventListener('click', async () => {
@@ -150,8 +158,8 @@
             window.location.reload();
         });
 
-        // LE COMPTEUR PREND MAINTENANT LA VRAIE DATE EN PARAMÈTRE
         function startCountdown(dateDepart) {
+            if (!dateDepart) return;
             if (countdownInterval) clearInterval(countdownInterval);
             const targetDate = new Date(dateDepart);
 
