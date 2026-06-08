@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Voyage - Espace Administrateur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-24">
+
+    <div class="max-w-2xl mx-auto px-4 pt-10">
+        <!-- Header -->
+        <div class="border-b border-slate-800 pb-6 mb-8">
+            <h1 class="text-3xl font-extrabold text-white flex items-center gap-3">🛠️ Panel Organisateur</h1>
+            <p class="text-slate-400 text-sm mt-1">Créez et modifiez les road-books de vos clients en temps réel</p>
+        </div>
+
+        <!-- ÉTAPE 1 : SÉLECTION DU CLIENT -->
+        <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl mb-6">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400 mb-4">1. Identification du Client</h2>
+            <div>
+                <label class="block text-xs text-slate-400 font-semibold mb-2">Coller l'UID Supabase du client</label>
+                <div class="flex gap-3">
+                    <input type="text" id="target-user-id" placeholder="Ex: 75ff0cdd-1497-402b-bba5..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white font-mono">
+                    <button type="button" id="btn-load" class="bg-indigo-600 hover:bg-indigo-500 px-5 rounded-xl font-semibold text-sm transition flex items-center gap-2 text-white shadow-lg">
+                        🔄 Charger
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- FORMULAIRE DE MODIFICATION -->
+        <form id="admin-form" class="space-y-6">
+            
+            <!-- ÉTAPE 2 : INFOS GÉNÉRALES & VOL -->
+            <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">2. Destination & Transports</h2>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Destination</label>
+                        <input type="text" id="destination" placeholder="Ex: Madère" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Date & Heure de départ</label>
+                        <input type="datetime-local" id="date_depart" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Compagnie Aérienne</label>
+                        <input type="text" id="vol_nom" placeholder="Ex: Ryanair" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Numéro de Vol</label>
+                        <input type="text" id="vol_numero" placeholder="Ex: FR5678" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Lien du Road-Book PDF</label>
+                    <input type="url" id="pdf_url" placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                </div>
+            </section>
+
+            <!-- ÉTAPE 3 : HÉBERGEMENT -->
+            <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">3. Logement</h2>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Nom de l'Hôtel / Airbnb</label>
+                        <input type="text" id="hotel_nom" placeholder="Ex: Savoy Palace" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Horaires de Check-in</label>
+                        <input type="text" id="hotel_checkin" placeholder="Ex: À partir de 15:00" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Lien de l'Itinéraire Google Maps</label>
+                    <input type="url" id="hotel_maps_url" placeholder="https://maps.google.com/..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                </div>
+            </section>
+
+            <!-- ÉTAPE 4 : PROGRAMME DYNAMIQUE -->
+            <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">4. Programme Jour par Jour</h2>
+                    <button type="button" id="btn-add-day" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-md">
+                        ➕ Ajouter un Jour
+                    </button>
+                </div>
+
+                <!-- Conteneur des jours -->
+                <div id="days-container" class="space-y-4">
+                    <!-- Les blocs de jours générés apparaîtront ici -->
+                </div>
+            </section>
+
+            <!-- BOUTON DE SAUVEGARDE FINALE -->
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl transition shadow-xl text-base tracking-wide">
+                💾 Enregistrer et Mettre à jour le Voyage
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://fwpncwhgadjexxqzwzvp.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3cG5jd2hnYWRqZXh4cXp3enZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjU3ODcsImV4cCI6MjA5NjUwMTc4N30.INMWhHLyP4X9qu-R1HIJQHya7ySdsI9oREXfwq7LVxA";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const btnLoad = document.getElementById('btn-load');
+        const btnAddDay = document.getElementById('btn-add-day');
+        const daysContainer = document.getElementById('days-container');
+        const adminForm = document.getElementById('admin-form');
+
+        // Fonction pour ajouter visuellement une ligne "Jour" dans le formulaire
+        function addDayRow(titre = '', desc = '') {
+            const dayCount = daysContainer.children.length + 1;
+            const dayHtml = `
+                <div class="day-row bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3 relative">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Jour ${dayCount}</span>
+                        <button type="button" onclick="this.closest('.day-row').remove()" class="text-rose-400 hover:text-rose-500 text-xs font-semibold">Supprimer</button>
+                    </div>
+                    <input type="text" placeholder="Titre de la journée" value="${titre}" class="day-title w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <textarea placeholder="Description des activités..." rows="2" class="day-desc w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">${desc}</textarea>
+                </div>
+            `;
+            daysContainer.insertAdjacentHTML('beforeend', dayHtml);
+        }
+
+        btnAddDay.addEventListener('click', () => addDayRow());
+
+        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        btnLoad.addEventListener('click', async () => {
+            const userId = document.getElementById('target-user-id').value.trim();
+            if (!userId) return alert("Veuillez d'abord coller l'UID du client !");
+
+            const { data: voyage, error } = await supabaseClient
+                .from('voyages')
+                .select('*')
+                .eq('user_id', userId)
+                .maybeSingle();
+
+            if (error) return alert("Erreur lors de la recherche : " + error.message);
+            
+            if (!voyage) {
+                alert("Aucun voyage existant pour cet UID. Vous allez créer un nouveau voyage à la sauvegarde.");
+                daysContainer.innerHTML = "";
+                adminForm.reset();
+                return;
+            }
+
+            // Remplissage des champs classiques
+            document.getElementById('destination').value = voyage.destination || '';
+            document.getElementById('vol_nom').value = voyage.vol_nom || '';
+            document.getElementById('vol_numero').value = voyage.vol_numero || '';
+            document.getElementById('pdf_url').value = voyage.pdf_url || '';
+            document.getElementById('hotel_nom').value = voyage.hotel_nom || '';
+            document.getElementById('hotel_checkin').value = voyage.hotel_checkin || '';
+            document.getElementById('hotel_maps_url').value = voyage.hotel_maps_url || '';
+            
+            // Formatage de la date pour le calendrier HTML (YYYY-MM-DDTHH:MM)
+            if (voyage.date_depart) {
+                const dateClean = voyage.date_depart.replace(' ', 'T').substring(0, 16);
+                document.getElementById('date_depart').value = dateClean;
+            } else {
+                document.getElementById('date_depart').value = '';
+            }
+
+            // Reconstruction automatique de la liste du programme
+            daysContainer.innerHTML = "";
+            if (voyage.programme && Array.isArray(voyage.programme)) {
+                voyage.programme.forEach(etape => {
+                    addDayRow(etape.titre, etape.desc);
+                });
+            }
+            alert("Données du client importées avec succès !");
+        });
+
+        // ENREGISTRER / METTRE À JOUR LE VOYAGE
+        adminForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById('target-user-id').value.trim();
+            if (!userId) return alert("L'UID du client est obligatoire pour enregistrer.");
+
+            // 1. Fabrication automatique du tableau de programme (JSON)
+            const rows = document.querySelectorAll('.day-row');
+            const programmeArray = [];
+            rows.forEach(row => {
+                const titre = row.querySelector('.day-title').value.trim();
+                const desc = row.querySelector('.day-desc').value.trim();
+                if (titre || desc) {
+                    programmeArray.push({ titre: titre, desc: desc });
+                }
+            });
+
+            // 2. Assemblage du paquet d'informations
+            const payload = {
+                user_id: userId,
+                destination: document.getElementById('destination').value.trim(),
+                date_depart: document.getElementById('date_depart').value || null,
+                vol_nom: document.getElementById('vol_nom').value.trim(),
+                vol_numero: document.getElementById('vol_numero').value.trim(),
+                pdf_url: document.getElementById('pdf_url').value.trim(),
+                hotel_nom: document.getElementById('hotel_nom').value.trim(),
+                hotel_checkin: document.getElementById('hotel_checkin').value.trim(),
+                hotel_maps_url: document.getElementById('hotel_maps_url').value.trim(),
+                programme: programmeArray // Notre JSON propre fabriqué automatiquement !
+            };
+
+            // 3. Envoi chirurgical à Supabase (Upsert écrase la ligne existante ou la crée)
+            const { error } = await supabaseClient
+                .from('voyages')
+                .upsert(payload, { onConflict: 'user_id' });
+
+            if (error) {
+                alert("Erreur de sauvegarde : " + error.message);
+            } else {
+                alert("✨ Succès ! Le voyage a été mis à jour. Votre client verra les modifications instantanément.");
+            }
+        });
+    </script>
+</body>
+</html>
