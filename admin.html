@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS Voyage - Espace Administrateur</title>
+    <title>SaaS Voyage - Panel Administrateur Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,31 +13,25 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen pb-24">
 
-    <div class="max-w-2xl mx-auto px-4 pt-10">
-        <!-- Header -->
+    <div class="max-w-3xl mx-auto px-4 pt-10">
         <div class="border-b border-slate-800 pb-6 mb-8">
-            <h1 class="text-3xl font-extrabold text-white flex items-center gap-3">🛠️ Panel Organisateur</h1>
-            <p class="text-slate-400 text-sm mt-1">Créez et modifiez les road-books de vos clients en temps réel</p>
+            <h1 class="text-3xl font-extrabold text-white flex items-center gap-3">🛠️ Panel Organisateur Pro</h1>
+            <p class="text-slate-400 text-sm mt-1">Gestion multi-hôtels illimités, vols et plannings d'activités.</p>
         </div>
 
-        <!-- ÉTAPE 1 : SÉLECTION DU CLIENT -->
         <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl mb-6">
             <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400 mb-4">1. Identification du Client</h2>
             <div>
-                <label class="block text-xs text-slate-400 font-semibold mb-2">Coller l'UID Supabase du client</label>
+                <label class="block text-xs text-slate-400 font-semibold mb-2">UID Supabase du client</label>
                 <div class="flex gap-3">
                     <input type="text" id="target-user-id" placeholder="Ex: 75ff0cdd-1497-402b-bba5..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white font-mono">
-                    <button type="button" id="btn-load" class="bg-indigo-600 hover:bg-indigo-500 px-5 rounded-xl font-semibold text-sm transition flex items-center gap-2 text-white shadow-lg">
-                        🔄 Charger
-                    </button>
+                    <button type="button" id="btn-load" class="bg-indigo-600 hover:bg-indigo-500 px-5 rounded-xl font-semibold text-sm transition flex items-center gap-2 text-white shadow-lg">🔄 Charger</button>
                 </div>
             </div>
         </section>
 
-        <!-- FORMULAIRE DE MODIFICATION -->
         <form id="admin-form" class="space-y-6">
             
-            <!-- ÉTAPE 2 : INFOS GÉNÉRALES & VOL -->
             <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
                 <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">2. Destination & Transports</h2>
                 
@@ -47,68 +41,48 @@
                         <input type="text" id="destination" placeholder="Ex: Madère" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-400 mb-1">Date & Heure de départ</label>
+                        <label class="block text-xs text-slate-400 mb-1">Date & Heure de l'Aller (Compteur)</label>
                         <input type="datetime-local" id="date_depart" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Compagnie Aérienne</label>
-                        <input type="text" id="vol_nom" placeholder="Ex: Ryanair" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Numéro de Vol</label>
-                        <input type="text" id="vol_numero" placeholder="Ex: FR5678" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
-                    </div>
+                <div class="border-t border-slate-700/50 pt-4 grid grid-cols-3 gap-4">
+                    <div class="col-span-3 text-xs font-bold text-slate-400 uppercase tracking-wider">🛫 Vol Aller</div>
+                    <input type="text" id="vol_nom" placeholder="Compagnie Aller" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    <input type="text" id="vol_numero" placeholder="N° Vol Aller" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    <input type="text" disabled placeholder="Date gérée au-dessus" class="bg-slate-800/50 border border-slate-700 text-slate-500 rounded-xl px-4 py-3 text-sm cursor-not-allowed">
                 </div>
 
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Lien du Road-Book PDF</label>
+                <div class="border-t border-slate-700/50 pt-4 grid grid-cols-3 gap-4">
+                    <div class="col-span-3 text-xs font-bold text-slate-400 uppercase tracking-wider">🛬 Vol Retour</div>
+                    <input type="text" id="vol_retour_nom" placeholder="Compagnie Retour" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    <input type="text" id="vol_retour_numero" placeholder="N° Vol Retour" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    <input type="datetime-local" id="date_retour" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                </div>
+
+                <div class="border-t border-slate-700/50 pt-2">
+                    <label class="block text-xs text-slate-400 mb-1">Lien Universel Road-Book PDF</label>
                     <input type="url" id="pdf_url" placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
                 </div>
             </section>
 
-            <!-- ÉTAPE 3 : HÉBERGEMENT -->
-            <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
-                <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">3. Logement</h2>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Nom de l'Hôtel / Airbnb</label>
-                        <input type="text" id="hotel_nom" placeholder="Ex: Savoy Palace" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Horaires de Check-in</label>
-                        <input type="text" id="hotel_checkin" placeholder="Ex: À partir de 15:00" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Lien de l'Itinéraire Google Maps</label>
-                    <input type="url" id="hotel_maps_url" placeholder="https://maps.google.com/..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
-                </div>
-            </section>
-
-            <!-- ÉTAPE 4 : PROGRAMME DYNAMIQUE -->
             <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">4. Programme Jour par Jour</h2>
-                    <button type="button" id="btn-add-day" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-md">
-                        ➕ Ajouter un Jour
-                    </button>
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">3. Hébergements / Étapes (Illimités)</h2>
+                    <button type="button" id="btn-add-hotel" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-md">➕ Ajouter un Logement</button>
                 </div>
-
-                <!-- Conteneur des jours -->
-                <div id="days-container" class="space-y-4">
-                    <!-- Les blocs de jours générés apparaîtront ici -->
-                </div>
+                <div id="hotels-container" class="space-y-4"></div>
             </section>
 
-            <!-- BOUTON DE SAUVEGARDE FINALE -->
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl transition shadow-xl text-base tracking-wide">
-                💾 Enregistrer et Mettre à jour le Voyage
-            </button>
+            <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">4. Itinéraire & Activités Précises</h2>
+                    <button type="button" id="btn-add-day" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-md">➕ Ajouter un Jour</button>
+                </div>
+                <div id="days-container" class="space-y-6"></div>
+            </section>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition shadow-xl text-base tracking-wide">💾 Enregistrer et synchroniser le voyage</button>
         </form>
     </div>
 
@@ -118,116 +92,164 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const btnLoad = document.getElementById('btn-load');
+        const btnAddHotel = document.getElementById('btn-add-hotel');
+        const hotelsContainer = document.getElementById('hotels-container');
         const btnAddDay = document.getElementById('btn-add-day');
         const daysContainer = document.getElementById('days-container');
         const adminForm = document.getElementById('admin-form');
 
-        // Fonction pour ajouter visuellement une ligne "Jour" dans le formulaire
-        function addDayRow(titre = '', desc = '') {
-            const dayCount = daysContainer.children.length + 1;
-            const dayHtml = `
-                <div class="day-row bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3 relative">
+        // Ajouter une ligne d'Hébergement
+        function addHotelRow(nom = '', checkin = '', checkout = '', mapsUrl = '') {
+            const hotelCount = hotelsContainer.children.length + 1;
+            const html = `
+                <div class="hotel-row bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3 relative">
                     <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Jour ${dayCount}</span>
-                        <button type="button" onclick="this.closest('.day-row').remove()" class="text-rose-400 hover:text-rose-500 text-xs font-semibold">Supprimer</button>
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">🏨 Logement / Étape ${hotelCount}</span>
+                        <button type="button" onclick="this.closest('.hotel-row').remove()" class="text-rose-400 hover:text-rose-500 text-xs font-semibold">Supprimer</button>
                     </div>
-                    <input type="text" placeholder="Titre de la journée" value="${titre}" class="day-title w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-                    <textarea placeholder="Description des activités..." rows="2" class="day-desc w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">${desc}</textarea>
+                    <input type="text" placeholder="Nom de l'hôtel ou Airbnb" value="${nom}" class="hotel-nom w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" placeholder="Dates Check-in (ex: Du 12/06 à 15:00)" value="${checkin}" class="hotel-checkin bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                        <input type="text" placeholder="Dates Check-out (ex: Au 15/06 à 11:00)" value="${checkout}" class="hotel-checkout bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <input type="url" placeholder="Lien Google Maps de l'hôtel" value="${mapsUrl}" class="hotel-maps w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                </div>
+            `;
+            hotelsContainer.insertAdjacentHTML('beforeend', html);
+        }
+
+        // Ajouter une ligne d'activité spécifique dans un jour donné
+        function createActivityRow(container, horaire = '', titre = '', desc = '') {
+            const html = `
+                <div class="activity-row grid grid-cols-4 gap-2 bg-slate-950 p-3 rounded-lg border border-slate-800 relative group">
+                    <input type="text" placeholder="09:00" value="${horaire}" class="act-horaire bg-slate-900 border border-slate-700 rounded p-1 text-xs text-white text-center focus:outline-none focus:border-indigo-500">
+                    <input type="text" placeholder="Titre de l'activité" value="${titre}" class="act-titre col-span-3 bg-slate-900 border border-slate-700 rounded p-1 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    <textarea placeholder="Détails ou adresse..." rows="1" class="act-desc col-span-4 bg-slate-900 border border-slate-700 rounded p-1 text-xs text-white focus:outline-none focus:border-indigo-500">${desc}</textarea>
+                    <button type="button" onclick="this.closest('.activity-row').remove()" class="absolute right-2 top-2 text-rose-500 text-[10px] hidden group-hover:block">Supprimer</button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        // Ajouter un jour complet
+        function addDayRow(titreJour = '', activitesArray = []) {
+            const dayCount = daysContainer.children.length + 1;
+            const uniqueId = 'activities-container-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+            
+            const dayHtml = `
+                <div class="day-row bg-slate-900 p-5 rounded-xl border border-slate-700 space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Jour ${dayCount}</span>
+                        <button type="button" onclick="this.closest('.day-row').remove()" class="text-rose-400 hover:text-rose-500 text-xs font-semibold">Supprimer ce jour</button>
+                    </div>
+                    <div>
+                        <input type="text" value="${titreJour}" placeholder="Titre Général du Jour (ex: Randonnée & Nature)" class="day-title w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center"><span class="text-[10px] uppercase font-bold text-slate-400">Chronologie de la journée</span><button type="button" class="text-indigo-400 hover:text-indigo-300 text-xs font-bold btn-add-activity">➕ Ajouter une activité</button></div>
+                        <div id="${uniqueId}" class="activities-list space-y-2"></div>
+                    </div>
                 </div>
             `;
             daysContainer.insertAdjacentHTML('beforeend', dayHtml);
+            
+            const currentActContainer = document.getElementById(uniqueId);
+            const currentAddBtn = currentActContainer.closest('.day-row').querySelector('.btn-add-activity');
+            currentAddBtn.addEventListener('click', () => createActivityRow(currentActContainer));
+            
+            if(activitesArray.length > 0) {
+                activitesArray.forEach(act => createActivityRow(currentActContainer, act.horaire, act.titre, act.desc));
+            } else {
+                createActivityRow(currentActContainer);
+            }
         }
 
+        btnAddHotel.addEventListener('click', () => addHotelRow());
         btnAddDay.addEventListener('click', () => addDayRow());
 
-        // CHARGER LES DONNÉES DEPUIS SUPABASE
+        // CHARGEMENT
         btnLoad.addEventListener('click', async () => {
             const userId = document.getElementById('target-user-id').value.trim();
-            if (!userId) return alert("Veuillez d'abord coller l'UID du client !");
+            if (!userId) return alert("Veuillez entrer l'UID du client !");
 
-            const { data: voyage, error } = await supabaseClient
-                .from('voyages')
-                .select('*')
-                .eq('user_id', userId)
-                .maybeSingle();
+            const { data: voyage, error } = await supabaseClient.from('voyages').select('*').eq('user_id', userId).maybeSingle();
+            if (error) return alert(error.message);
+            if (!voyage) return alert("Aucun voyage pour cet UID.");
 
-            if (error) return alert("Erreur lors de la recherche : " + error.message);
-            
-            if (!voyage) {
-                alert("Aucun voyage existant pour cet UID. Vous allez créer un nouveau voyage à la sauvegarde.");
-                daysContainer.innerHTML = "";
-                adminForm.reset();
-                return;
-            }
-
-            // Remplissage des champs classiques
             document.getElementById('destination').value = voyage.destination || '';
             document.getElementById('vol_nom').value = voyage.vol_nom || '';
             document.getElementById('vol_numero').value = voyage.vol_numero || '';
+            document.getElementById('vol_retour_nom').value = voyage.vol_retour_nom || '';
+            document.getElementById('vol_retour_numero').value = voyage.vol_retour_numero || '';
             document.getElementById('pdf_url').value = voyage.pdf_url || '';
-            document.getElementById('hotel_nom').value = voyage.hotel_nom || '';
-            document.getElementById('hotel_checkin').value = voyage.hotel_checkin || '';
-            document.getElementById('hotel_maps_url').value = voyage.hotel_maps_url || '';
             
-            // Formatage de la date pour le calendrier HTML (YYYY-MM-DDTHH:MM)
-            if (voyage.date_depart) {
-                const dateClean = voyage.date_depart.replace(' ', 'T').substring(0, 16);
-                document.getElementById('date_depart').value = dateClean;
-            } else {
-                document.getElementById('date_depart').value = '';
+            if (voyage.date_depart) document.getElementById('date_depart').value = voyage.date_depart.replace(' ', 'T').substring(0,16);
+            if (voyage.date_retour) document.getElementById('date_retour').value = voyage.date_retour.replace(' ', 'T').substring(0,16);
+
+            // Reconstruire la liste des hôtels
+            hotelsContainer.innerHTML = "";
+            if (voyage.hotels && Array.isArray(voyage.hotels)) {
+                voyage.hotels.forEach(h => addHotelRow(h.nom, h.checkin, h.checkout, h.maps_url));
             }
 
-            // Reconstruction automatique de la liste du programme
+            // Reconstruire le programme
             daysContainer.innerHTML = "";
             if (voyage.programme && Array.isArray(voyage.programme)) {
-                voyage.programme.forEach(etape => {
-                    addDayRow(etape.titre, etape.desc);
-                });
+                voyage.programme.forEach(j => addDayRow(j.titre_jour, j.activites || []));
             }
-            alert("Données du client importées avec succès !");
+            alert("Données importées !");
         });
 
-        // ENREGISTRER / METTRE À JOUR LE VOYAGE
+        // ENREGISTREMENT
         adminForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const userId = document.getElementById('target-user-id').value.trim();
-            if (!userId) return alert("L'UID du client est obligatoire pour enregistrer.");
+            if (!userId) return alert("UID obligatoire.");
 
-            // 1. Fabrication automatique du tableau de programme (JSON)
-            const rows = document.querySelectorAll('.day-row');
-            const programmeArray = [];
-            rows.forEach(row => {
-                const titre = row.querySelector('.day-title').value.trim();
-                const desc = row.querySelector('.day-desc').value.trim();
-                if (titre || desc) {
-                    programmeArray.push({ titre: titre, desc: desc });
-                }
+            // 1. Collecte des hôtels
+            const hotelRows = document.querySelectorAll('.hotel-row');
+            const hotelsArray = [];
+            hotelRows.forEach(row => {
+                const nom = row.querySelector('.hotel-nom').value.trim();
+                const checkin = row.querySelector('.hotel-checkin').value.trim();
+                const checkout = row.querySelector('.hotel-checkout').value.trim();
+                const maps = row.querySelector('.hotel-maps').value.trim();
+                if(nom) hotelsArray.push({ nom, checkin, checkout, maps_url: maps });
             });
 
-            // 2. Assemblage du paquet d'informations
+            // 2. Collecte du programme
+            const dayRows = document.querySelectorAll('.day-row');
+            const programmeComplex = [];
+            dayRows.forEach(dayRow => {
+                const title = dayRow.querySelector('.day-title').value.trim();
+                const actRows = dayRow.querySelectorAll('.activity-row');
+                const acts = [];
+                actRows.forEach(ar => {
+                    const h = ar.querySelector('.act-horaire').value.trim();
+                    const t = ar.querySelector('.act-titre').value.trim();
+                    const d = ar.querySelector('.act-desc').value.trim();
+                    if(h || t || d) acts.push({ horaire: h, titre: t, desc: d });
+                });
+                if (title || acts.length > 0) programmeComplex.push({ titre_jour: title, activites: acts });
+            });
+
             const payload = {
                 user_id: userId,
                 destination: document.getElementById('destination').value.trim(),
                 date_depart: document.getElementById('date_depart').value || null,
+                date_retour: document.getElementById('date_retour').value || null,
                 vol_nom: document.getElementById('vol_nom').value.trim(),
                 vol_numero: document.getElementById('vol_numero').value.trim(),
+                vol_retour_nom: document.getElementById('vol_retour_nom').value.trim(),
+                vol_retour_numero: document.getElementById('vol_retour_numero').value.trim(),
                 pdf_url: document.getElementById('pdf_url').value.trim(),
-                hotel_nom: document.getElementById('hotel_nom').value.trim(),
-                hotel_checkin: document.getElementById('hotel_checkin').value.trim(),
-                hotel_maps_url: document.getElementById('hotel_maps_url').value.trim(),
-                programme: programmeArray // Notre JSON propre fabriqué automatiquement !
+                hotels: hotelsArray, // Remplacement complet par le JSON multi-hébergement
+                programme: programmeComplex
             };
 
-            // 3. Envoi chirurgical à Supabase (Upsert écrase la ligne existante ou la crée)
-            const { error } = await supabaseClient
-                .from('voyages')
-                .upsert(payload, { onConflict: 'user_id' });
-
-            if (error) {
-                alert("Erreur de sauvegarde : " + error.message);
-            } else {
-                alert("✨ Succès ! Le voyage a été mis à jour. Votre client verra les modifications instantanément.");
-            }
+            const { error } = await supabaseClient.from('voyages').upsert(payload, { onConflict: 'user_id' });
+            if (error) alert("Erreur : " + error.message);
+            else alert("✨ Enregistré avec succès ! Vos modifications multi-hôtels sont en ligne.");
         });
     </script>
 </body>
