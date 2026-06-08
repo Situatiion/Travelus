@@ -14,24 +14,31 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen pb-24">
 
     <div class="max-w-3xl mx-auto px-4 pt-10">
-        <div class="border-b border-slate-800 pb-6 mb-8">
-            <h1 class="text-3xl font-extrabold text-white flex items-center gap-3">🛠️ Panel Organisateur Pro</h1>
-            <p class="text-slate-400 text-sm mt-1">Gestion multi-hôtels illimités, vols et plannings d'activités.</p>
+        <!-- Header -->
+        <div class="border-b border-slate-800 pb-6 mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-extrabold text-white flex items-center gap-3">🛠️ Panel Organisateur Pro</h1>
+                <p class="text-slate-400 text-sm mt-1">Gestion multi-hôtels illimités, vols et plannings d'activités.</p>
+            </div>
+            <button type="button" id="btn-reset-all" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2.5 rounded-xl transition border border-slate-700">Vider le formulaire</button>
         </div>
 
+        <!-- 1. IDENTIFICATION -->
         <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl mb-6">
             <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400 mb-4">1. Identification du Client</h2>
             <div>
                 <label class="block text-xs text-slate-400 font-semibold mb-2">UID Supabase du client</label>
                 <div class="flex gap-3">
                     <input type="text" id="target-user-id" placeholder="Ex: 75ff0cdd-1497-402b-bba5..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white font-mono">
-                    <button type="button" id="btn-load" class="bg-indigo-600 hover:bg-indigo-500 px-5 rounded-xl font-semibold text-sm transition flex items-center gap-2 text-white shadow-lg">🔄 Charger</button>
+                    <button type="button" id="btn-load" class="bg-indigo-600 hover:bg-indigo-500 px-5 rounded-xl font-semibold text-sm transition flex items-center gap-2 text-white shadow-lg disabled:opacity-50">🔄 Charger</button>
                 </div>
             </div>
         </section>
 
+        <!-- FORMULAIRE -->
         <form id="admin-form" class="space-y-6">
             
+            <!-- 2. DESTINATION & VOLS -->
             <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
                 <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">2. Destination & Transports</h2>
                 
@@ -57,7 +64,7 @@
                     <div class="col-span-3 text-xs font-bold text-slate-400 uppercase tracking-wider">🛬 Vol Retour</div>
                     <input type="text" id="vol_retour_nom" placeholder="Compagnie Retour" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
                     <input type="text" id="vol_retour_numero" placeholder="N° Vol Retour" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
-                    <input type="datetime-local" id="date_retour" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
+                    <input type="datetime-local" id="date_retour" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white">
                 </div>
 
                 <div class="border-t border-slate-700/50 pt-2">
@@ -66,6 +73,7 @@
                 </div>
             </section>
 
+            <!-- 3. LOGEMENTS DYNAMIQUES -->
             <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
                 <div class="flex justify-between items-center">
                     <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">3. Hébergements / Étapes (Illimités)</h2>
@@ -74,6 +82,7 @@
                 <div id="hotels-container" class="space-y-4"></div>
             </section>
 
+            <!-- 4. PROGRAMME MULTI-ACTIVITÉS -->
             <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
                 <div class="flex justify-between items-center">
                     <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-400">4. Itinéraire & Activités Précises</h2>
@@ -82,7 +91,9 @@
                 <div id="days-container" class="space-y-6"></div>
             </section>
 
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition shadow-xl text-base tracking-wide">💾 Enregistrer et synchroniser le voyage</button>
+            <button type="submit" id="btn-submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition shadow-xl text-base tracking-wide flex items-center justify-center gap-2 disabled:opacity-50">
+                💾 Enregistrer et synchroniser le voyage
+            </button>
         </form>
     </div>
 
@@ -92,11 +103,30 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const btnLoad = document.getElementById('btn-load');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnResetAll = document.getElementById('btn-reset-all');
         const btnAddHotel = document.getElementById('btn-add-hotel');
         const hotelsContainer = document.getElementById('hotels-container');
         const btnAddDay = document.getElementById('btn-add-day');
         const daysContainer = document.getElementById('days-container');
         const adminForm = document.getElementById('admin-form');
+
+        // Fonction pour vider l'intégralité des saisies à l'écran
+        function resetForm(keepUserId = true) {
+            if (!keepUserId) document.getElementById('target-user-id').value = '';
+            document.getElementById('destination').value = '';
+            document.getElementById('date_depart').value = '';
+            document.getElementById('date_retour').value = '';
+            document.getElementById('vol_nom').value = '';
+            document.getElementById('vol_numero').value = '';
+            document.getElementById('vol_retour_nom').value = '';
+            document.getElementById('vol_retour_numero').value = '';
+            document.getElementById('pdf_url').value = '';
+            hotelsContainer.innerHTML = '';
+            daysContainer.innerHTML = '';
+        }
+
+        btnResetAll.addEventListener('click', () => resetForm(false));
 
         // Ajouter une ligne d'Hébergement
         function addHotelRow(nom = '', checkin = '', checkout = '', mapsUrl = '') {
@@ -118,7 +148,7 @@
             hotelsContainer.insertAdjacentHTML('beforeend', html);
         }
 
-        // Ajouter une ligne d'activité spécifique dans un jour donné
+        // Ajouter une ligne d'activité
         function createActivityRow(container, horaire = '', titre = '', desc = '') {
             const html = `
                 <div class="activity-row grid grid-cols-4 gap-2 bg-slate-950 p-3 rounded-lg border border-slate-800 relative group">
@@ -167,15 +197,30 @@
         btnAddHotel.addEventListener('click', () => addHotelRow());
         btnAddDay.addEventListener('click', () => addDayRow());
 
-        // CHARGEMENT
+        // ACTION : CHARGER UN CLIENT
         btnLoad.addEventListener('click', async () => {
             const userId = document.getElementById('target-user-id').value.trim();
             if (!userId) return alert("Veuillez entrer l'UID du client !");
 
-            const { data: voyage, error } = await supabaseClient.from('voyages').select('*').eq('user_id', userId).maybeSingle();
-            if (error) return alert(error.message);
-            if (!voyage) return alert("Aucun voyage pour cet UID.");
+            btnLoad.disabled = true;
+            btnLoad.innerText = "⏳ Recherche...";
 
+            const { data: voyage, error } = await supabaseClient.from('voyages').select('*').eq('user_id', userId).maybeSingle();
+            
+            btnLoad.disabled = false;
+            btnLoad.innerText = "🔄 Charger";
+
+            if (error) return alert("Erreur réseau : " + error.message);
+            
+            // Si le client n'existe pas encore dans la table voyages
+            if (!voyage) {
+                resetForm(true); // On nettoie le formulaire mais on garde l'UID saisi
+                alert("✨ Nouvel utilisateur détecté ! Le formulaire a été réinitialisé. Vous pouvez créer son premier voyage.");
+                return;
+            }
+
+            // Si le client existe, on pré-remplit tout
+            resetForm(true);
             document.getElementById('destination').value = voyage.destination || '';
             document.getElementById('vol_nom').value = voyage.vol_nom || '';
             document.getElementById('vol_numero').value = voyage.vol_numero || '';
@@ -183,28 +228,26 @@
             document.getElementById('vol_retour_numero').value = voyage.vol_retour_numero || '';
             document.getElementById('pdf_url').value = voyage.pdf_url || '';
             
-            if (voyage.date_depart) document.getElementById('date_depart').value = voyage.date_depart.replace(' ', 'T').substring(0,16);
-            if (voyage.date_retour) document.getElementById('date_retour').value = voyage.date_retour.replace(' ', 'T').substring(0,16);
+            if (voyage.date_depart) document.getElementById('date_depart').value = voyage.date_depart.substring(0,16);
+            if (voyage.date_retour) document.getElementById('date_retour').value = voyage.date_retour.substring(0,16);
 
-            // Reconstruire la liste des hôtels
-            hotelsContainer.innerHTML = "";
             if (voyage.hotels && Array.isArray(voyage.hotels)) {
                 voyage.hotels.forEach(h => addHotelRow(h.nom, h.checkin, h.checkout, h.maps_url));
             }
 
-            // Reconstruire le programme
-            daysContainer.innerHTML = "";
             if (voyage.programme && Array.isArray(voyage.programme)) {
                 voyage.programme.forEach(j => addDayRow(j.titre_jour, j.activites || []));
             }
-            alert("Données importées !");
         });
 
-        // ENREGISTREMENT
+        // ACTION : ENREGISTRER / UPSERT
         adminForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const userId = document.getElementById('target-user-id').value.trim();
-            if (!userId) return alert("UID obligatoire.");
+            if (!userId) return alert("L'UID du client est obligatoire pour enregistrer.");
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerText = "⏳ Enregistrement et synchronisation en cours...";
 
             // 1. Collecte des hôtels
             const hotelRows = document.querySelectorAll('.hotel-row');
@@ -243,13 +286,20 @@
                 vol_retour_nom: document.getElementById('vol_retour_nom').value.trim(),
                 vol_retour_numero: document.getElementById('vol_retour_numero').value.trim(),
                 pdf_url: document.getElementById('pdf_url').value.trim(),
-                hotels: hotelsArray, // Remplacement complet par le JSON multi-hébergement
+                hotels: hotelsArray,
                 programme: programmeComplex
             };
 
             const { error } = await supabaseClient.from('voyages').upsert(payload, { onConflict: 'user_id' });
-            if (error) alert("Erreur : " + error.message);
-            else alert("✨ Enregistré avec succès ! Vos modifications multi-hôtels sont en ligne.");
+            
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = "💾 Enregistrer et synchroniser le voyage";
+
+            if (error) {
+                alert("Erreur lors de la sauvegarde : " + error.message);
+            } else {
+                alert("✨ Synchronisation réussie ! Les données de votre client ont été mises à jour en direct sur son application.");
+            }
         });
     </script>
 </body>
