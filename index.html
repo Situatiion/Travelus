@@ -52,7 +52,7 @@
     <!-- ==================================================== -->
     <!-- ÉCRAN 2 : LE DASHBOARD DU VOYAGEUR (MASQUÉ AU DÉBUT) -->
     <!-- ==================================================== -->
-    <div id="dashboard-screen" class="hidden animate-fade-in">
+    <div id="dashboard-screen" class="hidden">
         <!-- BANNIÈRE IMMERSIVE -->
         <header class="relative h-64 bg-slate-900 flex items-end p-6 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" alt="Destination" class="absolute inset-0 w-full h-full object-cover opacity-60">
@@ -123,9 +123,8 @@
     <!-- LOGIQUE LOGIN & SUPABASE -->
     <!-- ==================================================== -->
     <script>
-        // 1. CONFIGURATION DE TES CLÉS SUPABASE
-        // Remplace ces valeurs par les tiennes une fois ton projet Supabase créé.
-        const SUPABASE_URL = "https://fwpncwhgadjexxqzwzvp.supabase.co/rest/v1/";
+        // 1. CONFIGURATION DE TES CLÉS SUPABASE (URL CORRIGÉE)
+        const SUPABASE_URL = "https://fwpncwhgadjexxqzwzvp.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3cG5jd2hnYWRqZXh4cXp3enZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjU3ODcsImV4cCI6MjA5NjUwMTc4N30.INMWhHLyP4X9qu-R1HIJQHya7ySdsI9oREXfwq7LVxA";
 
         // Initialisation du client Supabase
@@ -179,7 +178,7 @@
         // 4. GESTION DE LA DÉCONNEXION
         btnLogout.addEventListener('click', async () => {
             await supabase.auth.signOut();
-            window.location.reload(); // Recharge la page pour vider la session et revenir au login
+            window.location.reload(); // Recharge la page pour revenir au login
         });
 
         // 5. FONCTION COMPTEUR (RYANAIR)
