@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Compagnon de Voyage - Débug</title>
+    <title>Mon Compagnon de Voyage - Bloc Hébergement</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,6 +79,24 @@
                     </div>
                 </div>
             </section>
+
+            <section class="space-y-3">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Votre Hébergement</h3>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 space-y-4">
+                    <div class="flex items-start justify-between">
+                        <div class="flex gap-3">
+                            <div class="bg-amber-50 text-amber-600 p-2 rounded-xl text-lg flex items-center justify-center h-10 w-10">🏨</div>
+                            <div>
+                                <h4 id="hotel-nom" class="font-bold text-base text-slate-900">Chargement...</h4>
+                                <p id="hotel-checkin" class="text-xs text-slate-400 mt-0.5">...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="hotel-maps" href="#" target="_blank" class="w-full bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition border border-slate-100">
+                        📍 Ouvrir dans Google Maps
+                    </a>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -123,33 +141,40 @@
             dashboardScreen.classList.remove('hidden');
             userDisplayEmail.innerText = user.email;
 
-            // REQUÊTE AVEC VÉRIFICATION DES ERREURS
             const { data: voyage, error } = await supabaseClient
                 .from('voyages')
                 .select('*')
                 .eq('user_id', user.id)
-                .maybeSingle(); // Modifié pour éviter le crash si vide
+                .maybeSingle();
 
-            // Si Supabase renvoie une vraie erreur technique (droits, RLS, orthographe)
             if (error) {
-                console.error("Erreur complète :", error);
                 document.getElementById('voyage-destination').innerText = "Erreur Base : " + error.message;
                 return;
             }
 
-            // Si la requête fonctionne mais qu'il n'y a pas de ligne pour cet utilisateur
             if (!voyage) {
-                document.getElementById('voyage-destination').innerText = "Aucun voyage trouvé pour cet ID";
-                console.log("ID recherché mais introuvable dans la table :", user.id);
+                document.getElementById('voyage-destination').innerText = "Aucun voyage trouvé";
                 return;
             }
 
-            // Si tout est bon, on affiche les données
+            // Affichage des données existantes
             document.getElementById('voyage-destination').innerText = voyage.destination;
             document.getElementById('voyage-pdf').href = voyage.pdf_url || "#";
             document.getElementById('vol-nom').innerText = "Vol Aller — " + (voyage.vol_nom || "Non spécifié");
             document.getElementById('vol-numero').innerText = "N° Vol : " + (voyage.vol_numero || "...");
             
+            // NOUVEAUTÉ : Affichage des données de l'hôtel
+            document.getElementById('hotel-nom').innerText = voyage.hotel_nom || "Hébergement non spécifié";
+            document.getElementById('hotel-checkin').innerText = "Check-in : " + (voyage.hotel_checkin || "Non renseigné");
+            document.getElementById('hotel-maps').href = voyage.hotel_maps_url || "#";
+            
+            // Masquer le bouton Maps si aucun lien n'est fourni
+            if (!voyage.hotel_maps_url) {
+                document.getElementById('hotel-maps').classList.add('hidden');
+            } else {
+                document.getElementById('hotel-maps').classList.remove('hidden');
+            }
+
             startCountdown(voyage.date_depart);
         }
 
