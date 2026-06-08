@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Compagnon de Voyage - Itinéraire</title>
+    <title>Mon Compagnon de Voyage v3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen pb-12">
@@ -18,20 +18,18 @@
             <div class="text-center mb-8">
                 <span class="text-3xl">✈️</span>
                 <h1 class="text-2xl font-extrabold text-slate-900 mt-3">Votre Espace Voyage</h1>
-                <p class="text-sm text-slate-400 mt-1">Connectez-vous pour accéder à votre road-book</p>
+                <p class="text-sm text-slate-400 mt-1">Connectez-vous pour accéder à vos documents</p>
             </div>
             <form id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Adresse Email</label>
-                    <input type="email" id="login-email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 text-sm transition" placeholder="exemple@mail.com">
+                    <input type="email" id="login-email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500" placeholder="exemple@mail.com">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Mot de passe</label>
-                    <input type="password" id="login-password" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 text-sm transition" placeholder="••••••••">
+                    <input type="password" id="login-password" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500" placeholder="••••••••">
                 </div>
-                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 rounded-xl transition shadow-lg mt-2">
-                    Débloquer mon voyage
-                </button>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-4 rounded-xl transition shadow-lg mt-2">Débloquer mon voyage</button>
             </form>
             <div id="login-error" class="text-rose-500 text-xs text-center mt-4 hidden"></div>
         </div>
@@ -42,9 +40,9 @@
             <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" alt="Destination" class="absolute inset-0 w-full h-full object-cover opacity-60">
             <div class="relative z-10 w-full max-w-md mx-auto flex justify-between items-end">
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full backdrop-blur-sm">Prochain Départ</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full backdrop-blur-sm">Carnet de bord</span>
                     <h1 id="voyage-destination" class="text-3xl font-extrabold text-white mt-2">Chargement...</h1>
-                    <p class="text-slate-200 text-sm">Organisé pour <span id="user-display-email">...</span></p>
+                    <p class="text-slate-200 text-xs">Client : <span id="user-display-email">...</span></p>
                 </div>
                 <button id="btn-logout" class="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold px-3 py-2 rounded-xl backdrop-blur-sm transition">Quitter</button>
             </div>
@@ -61,47 +59,36 @@
             </section>
 
             <section>
-                <a id="voyage-pdf" href="#" target="_blank" class="w-full bg-emerald-500 hover:bg-emerald-600 transition text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
-                    Télécharger le Road-Book (PDF)
+                <a id="voyage-pdf" href="#" target="_blank" class="w-full bg-emerald-500 hover:bg-emerald-600 transition text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-md text-sm">
+                    🖨️ Télécharger le Road-Book (PDF Complet)
                 </a>
             </section>
 
             <section class="space-y-3">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Vos documents de voyage</h3>
-                <div class="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-blue-50 text-blue-600 p-2 rounded-lg">🛫</div>
-                        <div>
-                            <h4 id="vol-nom" class="font-semibold text-sm">Chargement...</h4>
-                            <p id="vol-numero" class="text-xs text-slate-400">...</p>
-                        </div>
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Vos Transports</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 space-y-1">
+                        <span class="text-[10px] font-bold text-blue-500 uppercase">🛫 Vol Aller</span>
+                        <h4 id="vol-nom" class="font-bold text-xs text-slate-900">...</h4>
+                        <p id="vol-numero" class="text-[11px] text-slate-400">...</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 space-y-1">
+                        <span class="text-[10px] font-bold text-indigo-500 uppercase">🛬 Vol Retour</span>
+                        <h4 id="vol-retour-nom" class="font-bold text-xs text-slate-900">...</h4>
+                        <p id="vol-retour-numero" class="text-[11px] text-slate-400">...</p>
                     </div>
                 </div>
             </section>
 
-            <section class="space-y-3">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Votre Hébergement</h3>
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 space-y-4">
-                    <div class="flex items-start justify-between">
-                        <div class="flex gap-3">
-                            <div class="bg-amber-50 text-amber-600 p-2 rounded-xl text-lg flex items-center justify-center h-10 w-10">🏨</div>
-                            <div>
-                                <h4 id="hotel-nom" class="font-bold text-base text-slate-900">Chargement...</h4>
-                                <p id="hotel-checkin" class="text-xs text-slate-400 mt-0.5">...</p>
-                            </div>
-                        </div>
+            <section id="section-logements" class="space-y-3">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Vos Hébergements</h3>
+                <div id="hotels-list-container" class="space-y-3">
                     </div>
-                    <a id="hotel-maps" href="#" target="_blank" class="w-full bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition border border-slate-100">
-                        📍 Ouvrir dans Google Maps
-                    </a>
-                </div>
             </section>
 
             <section id="section-programme" class="space-y-3 hidden">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Votre Programme</h3>
-                <div id="programme-container" class="relative border-l-2 border-slate-200 ml-3 pl-6 space-y-6">
-                    </div>
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Votre Itinéraire Détaillé</h3>
+                <div id="programme-container" class="space-y-6"></div>
             </section>
         </main>
     </div>
@@ -109,7 +96,6 @@
     <script>
         const SUPABASE_URL = "https://fwpncwhgadjexxqzwzvp.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3cG5jd2hnYWRqZXh4cXp3enZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjU3ODcsImV4cCI6MjA5NjUwMTc4N30.INMWhHLyP4X9qu-R1HIJQHya7ySdsI9oREXfwq7LVxA";
-
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const loginScreen = document.getElementById('login-screen');
@@ -118,7 +104,6 @@
         const loginError = document.getElementById('login-error');
         const userDisplayEmail = document.getElementById('user-display-email');
         const btnLogout = document.getElementById('btn-logout');
-
         let countdownInterval;
 
         loginForm.addEventListener('submit', async (e) => {
@@ -128,12 +113,8 @@
             const password = document.getElementById('login-password').value;
 
             const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) {
-                loginError.innerText = "Identifiants incorrects.";
-                loginError.classList.remove('hidden');
-            } else {
-                showDashboard(data.user);
-            }
+            if (error) { loginError.innerText = "Identifiants incorrects."; loginError.classList.remove('hidden'); }
+            else { showDashboard(data.user); }
         });
 
         async function checkUserSession() {
@@ -147,97 +128,100 @@
             dashboardScreen.classList.remove('hidden');
             userDisplayEmail.innerText = user.email;
 
-            const { data: voyage, error } = await supabaseClient
-                .from('voyages')
-                .select('*')
-                .eq('user_id', user.id)
-                .maybeSingle();
+            const { data: voyage, error } = await supabaseClient.from('voyages').select('*').eq('user_id', user.id).maybeSingle();
+            if (error || !voyage) { document.getElementById('voyage-destination').innerText = "Erreur ou aucun voyage."; return; }
 
-            if (error) {
-                document.getElementById('voyage-destination').innerText = "Erreur Base : " + error.message;
-                return;
-            }
-
-            if (!voyage) {
-                document.getElementById('voyage-destination').innerText = "Aucun voyage trouvé";
-                return;
-            }
-
-            // Affichage données générales
             document.getElementById('voyage-destination').innerText = voyage.destination;
             document.getElementById('voyage-pdf').href = voyage.pdf_url || "#";
-            document.getElementById('vol-nom').innerText = "Vol Aller — " + (voyage.vol_nom || "Non spécifié");
-            document.getElementById('vol-numero').innerText = "N° Vol : " + (voyage.vol_numero || "...");
             
-            // Affichage hôtel
-            document.getElementById('hotel-nom').innerText = voyage.hotel_nom || "Hébergement non spécifié";
-            document.getElementById('hotel-checkin').innerText = "Check-in : " + (voyage.hotel_checkin || "Non renseigné");
-            document.getElementById('hotel-maps').href = voyage.hotel_maps_url || "#";
-            if (!voyage.hotel_maps_url) document.getElementById('hotel-maps').classList.add('hidden');
+            document.getElementById('vol-nom').innerText = voyage.vol_nom || "Non spécifié";
+            document.getElementById('vol-numero').innerText = "N° " + (voyage.vol_numero || "...");
+            document.getElementById('vol-retour-nom').innerText = voyage.vol_retour_nom || "Non programmé";
+            document.getElementById('vol-retour-numero').innerText = voyage.vol_retour_numero ? "N° " + voyage.vol_retour_numero : "...";
+
+            // GÉNÉRATION DYNAMIQUE DES HÔTELS
+            const hotelsContainer = document.getElementById('hotels-list-container');
+            hotelsContainer.innerHTML = "";
             
-            // NOUVEAUTÉ : Génération de la timeline du programme
+            if (voyage.hotels && Array.isArray(voyage.hotels) && voyage.hotels.length > 0) {
+                voyage.hotels.forEach((hotel) => {
+                    const htmlHotel = `
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
+                            <div class="flex gap-3">
+                                <div class="bg-amber-50 text-amber-600 p-2 rounded-xl text-lg flex items-center justify-center h-10 w-10">🏨</div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-sm text-slate-900">${hotel.nom || "Hébergement"}</h4>
+                                    <div class="grid grid-cols-2 gap-2 mt-2 text-[11px] border-t border-slate-50 pt-2">
+                                        <div><span class="text-slate-400 block font-semibold">🔑 CHECK-IN</span><span class="text-slate-700">${hotel.checkin || "Non spécifié"}</span></div>
+                                        <div><span class="text-slate-400 block font-semibold">🚪 CHECK-OUT</span><span class="text-slate-700">${hotel.checkout || "Non spécifié"}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            ${hotel.maps_url ? `<a href="${hotel.maps_url}" target="_blank" class="w-full bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition border border-slate-100">📍 Ouvrir dans Google Maps</a>` : ''}
+                        </div>
+                    `;
+                    hotelsContainer.insertAdjacentHTML('beforeend', htmlHotel);
+                });
+            } else {
+                hotelsContainer.innerHTML = `<p class="text-xs text-slate-400 italic p-2">Aucun logement enregistré pour ce voyage.</p>`;
+            }
+
+            // GÉNÉRATION D'ITINÉRAIRE
             const sectionProgramme = document.getElementById('section-programme');
             const containerProgramme = document.getElementById('programme-container');
-            containerProgramme.innerHTML = ""; // On vide l'ancien contenu
+            containerProgramme.innerHTML = "";
 
             if (voyage.programme && Array.isArray(voyage.programme) && voyage.programme.length > 0) {
-                sectionProgramme.classList.remove('hidden'); // On montre la section
+                sectionProgramme.classList.remove('hidden');
                 
-                voyage.programme.forEach((etape, index) => {
-                    const numeroJour = index + 1;
-                    
-                    // Structure HTML d'un jour sur la timeline
+                voyage.programme.forEach((jour, index) => {
+                    let htmlActivites = "";
+                    if(jour.activites && jour.activites.length > 0) {
+                        jour.activites.forEach(act => {
+                            htmlActivites += `
+                                <div class="flex gap-3 text-xs pl-2">
+                                    <span class="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded h-5 text-[10px] flex items-center">${act.horaire || "--:--"}</span>
+                                    <div class="flex-1">
+                                        <h5 class="font-semibold text-slate-800">${act.titre || "Activité"}</h5>
+                                        <p class="text-slate-400 text-[11px] mt-0.5 leading-relaxed">${act.desc || ""}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+
                     const htmlJour = `
-                        <div class="relative">
-                            <div class="absolute -left-[31px] top-1 bg-slate-900 text-white text-[10px] font-extrabold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white ring-4 ring-slate-100"></div>
-                            
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-500">Jour ${numeroJour}</span>
-                                <h4 class="font-bold text-sm text-slate-900">${etape.titre || "Activité"}</h4>
-                                <p class="text-xs text-slate-500 mt-1 leading-relaxed">${etape.desc || ""}</p>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
+                            <div class="border-b border-slate-100 pb-2">
+                                <span class="text-[10px] font-extrabold text-emerald-500 uppercase tracking-widest">Jour ${index + 1}</span>
+                                <h4 class="font-extrabold text-sm text-slate-900">${jour.titre_jour || "Programme de la journée"}</h4>
+                            </div>
+                            <div class="relative border-l-2 border-indigo-50 pl-2 ml-1 space-y-4">
+                                ${htmlActivites || '<p class="text-xs text-slate-400 italic">Aucune activité.</p>'}
                             </div>
                         </div>
                     `;
                     containerProgramme.insertAdjacentHTML('beforeend', htmlJour);
                 });
-            } else {
-                sectionProgramme.classList.add('hidden'); // Caché si pas de programme
             }
 
             startCountdown(voyage.date_depart);
         }
 
-        btnLogout.addEventListener('click', async () => {
-            await supabaseClient.auth.signOut();
-            window.location.reload();
-        });
+        btnLogout.addEventListener('click', async () => { await supabaseClient.auth.signOut(); window.location.reload(); });
 
         function startCountdown(dateDepart) {
             if (!dateDepart) return;
             if (countdownInterval) clearInterval(countdownInterval);
             const targetDate = new Date(dateDepart);
-
             function updateCountdown() {
-                const now = new Date();
-                const difference = targetDate - now;
-
-                if (difference <= 0) {
-                    document.getElementById('countdown-days').innerText = "00";
-                    document.getElementById('countdown-hours').innerText = "00";
-                    document.getElementById('countdown-minutes').innerText = "00";
-                    return;
-                }
-
-                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-
-                document.getElementById('countdown-days').innerText = days.toString().padStart(2, '0');
-                document.getElementById('countdown-hours').innerText = hours.toString().padStart(2, '0');
-                document.getElementById('countdown-minutes').innerText = minutes.toString().padStart(2, '0');
+                const difference = targetDate - new Date();
+                if (difference <= 0) return;
+                document.getElementById('countdown-days').innerText = Math.floor(difference / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+                document.getElementById('countdown-hours').innerText = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                document.getElementById('countdown-minutes').innerText = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
             }
-            updateCountdown();
-            countdownInterval = setInterval(updateCountdown, 60000);
+            updateCountdown(); countdownInterval = setInterval(updateCountdown, 60000);
         }
     </script>
 </body>
