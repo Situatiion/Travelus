@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Compagnon de Voyage - Bloc Hébergement</title>
+    <title>Mon Compagnon de Voyage - Itinéraire</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,6 +97,12 @@
                     </a>
                 </div>
             </section>
+
+            <section id="section-programme" class="space-y-3 hidden">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Votre Programme</h3>
+                <div id="programme-container" class="relative border-l-2 border-slate-200 ml-3 pl-6 space-y-6">
+                    </div>
+            </section>
         </main>
     </div>
 
@@ -157,22 +163,45 @@
                 return;
             }
 
-            // Affichage des données existantes
+            // Affichage données générales
             document.getElementById('voyage-destination').innerText = voyage.destination;
             document.getElementById('voyage-pdf').href = voyage.pdf_url || "#";
             document.getElementById('vol-nom').innerText = "Vol Aller — " + (voyage.vol_nom || "Non spécifié");
             document.getElementById('vol-numero').innerText = "N° Vol : " + (voyage.vol_numero || "...");
             
-            // NOUVEAUTÉ : Affichage des données de l'hôtel
+            // Affichage hôtel
             document.getElementById('hotel-nom').innerText = voyage.hotel_nom || "Hébergement non spécifié";
             document.getElementById('hotel-checkin').innerText = "Check-in : " + (voyage.hotel_checkin || "Non renseigné");
             document.getElementById('hotel-maps').href = voyage.hotel_maps_url || "#";
+            if (!voyage.hotel_maps_url) document.getElementById('hotel-maps').classList.add('hidden');
             
-            // Masquer le bouton Maps si aucun lien n'est fourni
-            if (!voyage.hotel_maps_url) {
-                document.getElementById('hotel-maps').classList.add('hidden');
+            // NOUVEAUTÉ : Génération de la timeline du programme
+            const sectionProgramme = document.getElementById('section-programme');
+            const containerProgramme = document.getElementById('programme-container');
+            containerProgramme.innerHTML = ""; // On vide l'ancien contenu
+
+            if (voyage.programme && Array.isArray(voyage.programme) && voyage.programme.length > 0) {
+                sectionProgramme.classList.remove('hidden'); // On montre la section
+                
+                voyage.programme.forEach((etape, index) => {
+                    const numeroJour = index + 1;
+                    
+                    // Structure HTML d'un jour sur la timeline
+                    const htmlJour = `
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 bg-slate-900 text-white text-[10px] font-extrabold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white ring-4 ring-slate-100"></div>
+                            
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-500">Jour ${numeroJour}</span>
+                                <h4 class="font-bold text-sm text-slate-900">${etape.titre || "Activité"}</h4>
+                                <p class="text-xs text-slate-500 mt-1 leading-relaxed">${etape.desc || ""}</p>
+                            </div>
+                        </div>
+                    `;
+                    containerProgramme.insertAdjacentHTML('beforeend', htmlJour);
+                });
             } else {
-                document.getElementById('hotel-maps').classList.remove('hidden');
+                sectionProgramme.classList.add('hidden'); // Caché si pas de programme
             }
 
             startCountdown(voyage.date_depart);
